@@ -4,6 +4,7 @@ import { Register } from "./components/Register";
 import { Home } from "./components/Home";
 import { Login } from "./components/Login";
 import { SideBar } from "./components/shared/SideBar";
+import { CreateJob } from "./components/CreateJob";
 
 export const App: React.FC = () => {
   return (
@@ -12,14 +13,17 @@ export const App: React.FC = () => {
               renders the first one that matches the current URL. */}
       <Switch>
         <SideBar>
-          <Route path="/register">
+          <Route exact path="/createJob">
+            <CreateJob />
+          </Route>
+          <Route exact path="/register">
             <Register />
           </Route>
-          <Route path="/login">
+          <Route exact path="/login">
             <Login />
           </Route>
-          <Route path="/about">{/* <About /> */}</Route>
-          <Route path="/">
+          <Route exact path="/about">{/* <About /> */}</Route>
+          <Route exact path="/">
             <Home />
           </Route>
         </SideBar>
