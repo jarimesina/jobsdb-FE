@@ -1,12 +1,16 @@
 import axios from "axios";
-import { Formik, useField } from "formik";
-import React from "react";
+import { Formik } from "formik";
+import React, { useState } from "react";
 import { JdInput } from "./shared/JdInput";
 import { JdSelect } from "./shared/JdSelect";
 import { JdTextArea } from "./shared/JdTextArea";
-import { Button, Chip } from '@material-ui/core';
+import { Chip } from '@material-ui/core';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import Collapse from '@mui/material/Collapse';
+import IconButton from '@mui/material/IconButton';
 
-interface JobDetails {
+export interface JobDetails {
   companyName: string,
   title: string,
   responsibilities: string, // text area
@@ -36,16 +40,21 @@ const programmingLanguages = [
 ]
 export const CreateJob: React.FC = () => {
 
+  const [isAlertOpen, setIsAlertOpen ] = useState(false);
+
   const onSubmit = (values: JobDetails, {setSubmitting}: any) => {
     axios
-      .post("http://localhost:4001/createJob", {
-      
+      .post("http://localhost:4001/job", {
+        companyName: values.companyName,
+        title: values.title,
+        responsibilities: values.responsibilities,
+        location: values.location,
+        numberOfEmployees: values.numberOfEmployees,
+        languages: values.languages
       })
       .then((response: any) => {
-        if (response.data.redirect === "/") {
-          window.location.href = "/";
-        } else if (response.data.redirect === "/login") {
-          window.location.href = "/login";
+        if(response.data.message==="POST new job"){
+          setIsAlertOpen(true);
         }
       })
       .catch((error) => {
@@ -65,7 +74,30 @@ export const CreateJob: React.FC = () => {
   }
 
   return (
-    <div className="h-full h-screen">
+    <div>
+      {
+        isAlertOpen && (
+          <Collapse in={isAlertOpen}>
+            <Alert severity="success"
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setIsAlertOpen(false);
+                }}
+              >
+                x
+              </IconButton>
+            }
+            >
+              <AlertTitle>Success</AlertTitle>
+              Job successfully created!
+            </Alert>
+          </Collapse>
+        )
+      }
       <Formik
         validator={null}
         initialValues={{
@@ -80,7 +112,6 @@ export const CreateJob: React.FC = () => {
         onSubmit={onSubmit}
       >
         {(props: {handleSubmit: any,handleChange: any, handleBlur: any, setFieldValue: any, values: JobDetails}) => {
-          console.log("values",props.values);
           return (
             <form onSubmit={props.handleSubmit}>
               <div className="mx-auto w-1/2 mt-10">
@@ -95,13 +126,15 @@ export const CreateJob: React.FC = () => {
                       <label>Image:</label>
                       <input
                         type="file"
-                        name="languages"
+                        name="image"
                         onChange={props.handleChange}
                         onBlur={props.handleBlur}
                         accept="image/*"
                       />
                     </div>
                   </div>
+
+                  <label>Languages:</label>
                   <JdSelect formikName="languages" optionList={programmingLanguages} handleOnChange={(e: any) => handleOnChange(e,props.setFieldValue,props.values.languages)}/>
                   <span className="space-x-1">
                     {
@@ -113,12 +146,17 @@ export const CreateJob: React.FC = () => {
                     }
                   </span>
 
-                  <JdTextArea formikName="responsibilities" onChange={props.handleChange} label="Responsibilities:"/>
-                  <JdTextArea formikName="location" onChange={props.handleChange} label="Location:" />
+                  <div className="mt-2">
+                   <JdTextArea formikName="responsibilities" onChange={props.handleChange} label="Responsibilities:"/>
+                  </div>
+
+                  <div className="mt-2">
+                    <JdTextArea formikName="location" onChange={props.handleChange} label="Location:" />
+                  </div>
 
                 </div>
 
-                <button type="submit">Submit</button>
+                <button type="submit" className="my-2 bg-purple-500 px-5 py-2 rounded-md text-white">Submit</button>
               </div>
             </form>
           );
