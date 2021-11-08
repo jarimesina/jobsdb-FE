@@ -1,13 +1,18 @@
 import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Register } from "./components/Register";
-import { Home } from "./components/Home";
+import Home from "./components/Home";
 import { Login } from "./components/Login";
 import { SideBar } from "./components/shared/SideBar";
 import { CreateJob } from "./components/CreateJob";
+import { Provider } from "react-redux";
+import store from "./store";
 
 export const App: React.FC = () => {
   return (
+    <Provider store={store}>
+
+
     <BrowserRouter>
       {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
@@ -29,5 +34,6 @@ export const App: React.FC = () => {
         </SideBar>
       </Switch>
     </BrowserRouter>
+    </Provider>
   );
 };
