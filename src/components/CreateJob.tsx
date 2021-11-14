@@ -50,7 +50,8 @@ export const CreateJob: React.FC = () => {
         responsibilities: values.responsibilities,
         location: values.location,
         numberOfEmployees: values.numberOfEmployees,
-        languages: values.languages
+        languages: values.languages,
+        image: values.image
       })
       .then((response: any) => {
         if(response.data.message==="POST new job"){
@@ -127,7 +128,17 @@ export const CreateJob: React.FC = () => {
                       <input
                         type="file"
                         name="image"
-                        onChange={props.handleChange}
+                        onChange={(e) => {
+                          if (e && e.target.files[0]) {
+                            const fileReader = new FileReader();
+                            fileReader.onload = () => {
+                              if (fileReader.readyState === 2) {
+                                props.setFieldValue('image', fileReader.result);
+                              }
+                            };
+                            fileReader.readAsDataURL(e.target.files[0]);
+                          }
+                        }}
                         onBlur={props.handleBlur}
                         accept="image/*"
                       />
