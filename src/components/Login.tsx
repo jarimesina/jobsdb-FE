@@ -47,36 +47,17 @@ export const Login: React.FC = () => {
                 </div>
 
                 <div className="pt-2">
-                  <TextField name="password" id="password" label="Password" variant="outlined" size="small"
-                    type="password"
+                <TextField name="password" id="password" label="Password" variant="outlined" size="small"
+                    type="password"                  
                     onChange={props.handleChange}
                     onBlur={props.handleBlur}
-                  />
+                />
                 </div>
-
                 <div className="pt-2">
                   <Button color="primary" variant="contained" fullWidth type="submit">
                     Submit
                   </Button>
                 </div>
-
-                {/* <div>Login</div>
-                <label>Email:</label>
-                <input
-                  type="text"
-                  name="email"
-                  onChange={props.handleChange}
-                  onBlur={props.handleBlur}
-                />
-                <label>Password:</label>
-                <input
-                  type="password"
-                  name="password"
-                  onChange={props.handleChange}
-                  onBlur={props.handleBlur}
-                />
-
-                <button type="submit">Submit</button> */}
               </form>
             </div>
           </div>
