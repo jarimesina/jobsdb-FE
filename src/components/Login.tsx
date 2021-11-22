@@ -1,3 +1,4 @@
+import { Button, TextField } from "@material-ui/core";
 import axios from "axios";
 import { Formik } from "formik";
 import React from "react";
@@ -34,25 +35,51 @@ export const Login: React.FC = () => {
     >
       {(props: {handleSubmit: any,handleChange: any, handleBlur: any }) => {
         return (
-          <form onSubmit={props.handleSubmit}>
-            <div>Login</div>
-            <label>Email:</label>
-            <input
-              type="text"
-              name="email"
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <label>Password:</label>
-            <input
-              type="password"
-              name="password"
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
+          <div className="w-full h-screen flex flex-col justify-center items-center">
+            <div className="border border-solid flex flex-col justify-center items-center p-10 w-1/4">
+              <h2>Login</h2>
+              <form onSubmit={props.handleSubmit}>
+                <div className="pt-2">
+                  <TextField name="email" id="email" label="Email" variant="outlined" size="small"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                  />
+                </div>
 
-            <button type="submit">Submit</button>
-          </form>
+                <div className="pt-2">
+                  <TextField name="password" id="password" label="Password" variant="outlined" size="small"
+                    type="password"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <Button color="primary" variant="contained" fullWidth type="submit">
+                    Submit
+                  </Button>
+                </div>
+
+                {/* <div>Login</div>
+                <label>Email:</label>
+                <input
+                  type="text"
+                  name="email"
+                  onChange={props.handleChange}
+                  onBlur={props.handleBlur}
+                />
+                <label>Password:</label>
+                <input
+                  type="password"
+                  name="password"
+                  onChange={props.handleChange}
+                  onBlur={props.handleBlur}
+                />
+
+                <button type="submit">Submit</button> */}
+              </form>
+            </div>
+          </div>
         );
       }}
     </Formik>

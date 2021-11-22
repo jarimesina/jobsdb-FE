@@ -17,6 +17,12 @@ export const App: React.FC = () => {
       {/* A <Switch> looks through its children <Route>s and
               renders the first one that matches the current URL. */}
       <Switch>
+        <Route exact path="/login">
+          <Login />
+        </Route>
+        <Route exact path="/signup">
+          <Register />
+        </Route>
         <SideBar>
           <Route exact path="/createJob">
             <CreateJob />
