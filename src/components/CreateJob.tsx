@@ -17,10 +17,11 @@ export interface JobDetails {
   location: string, // text area
   numberOfEmployees: string,
   languages: string[],
-  image: string
+  image: string,
+  dateCreated?: string,
 }
 
-const programmingLanguages = [
+export const programmingLanguages = [
   {
     value: 'React',
     name: 'React'
@@ -37,12 +38,14 @@ const programmingLanguages = [
     value: 'Angular',
     name: 'Angular'
   }
-]
+];
+
 export const CreateJob: React.FC = () => {
 
   const [isAlertOpen, setIsAlertOpen ] = useState(false);
 
   const onSubmit = (values: JobDetails, {setSubmitting}: any) => {
+    console.log("values",values);
     axios
       .post("http://localhost:4001/job", {
         companyName: values.companyName,
@@ -51,7 +54,8 @@ export const CreateJob: React.FC = () => {
         location: values.location,
         numberOfEmployees: values.numberOfEmployees,
         languages: values.languages,
-        image: values.image
+        image: values.image,
+        dateCreated: new Date(),
       })
       .then((response: any) => {
         if(response.data.message==="POST new job"){
