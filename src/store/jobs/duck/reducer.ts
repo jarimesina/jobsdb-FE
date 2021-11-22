@@ -24,6 +24,16 @@ export default function reducer(state: State = initialState, action: JobActions)
         ...state,
         jobs: action.payload.jobs
       };
+    case JobActions.FILTER_JOBS_BY_DATE:
+      return {
+        ...state,
+        jobs: state.jobs.filter(job => (job.dateCreated >= action.payload.datePosted))
+      }
+    case JobActions.FILTER_JOBS_BY_LANGUAGE:
+      return {
+        ...state,
+        jobs: state.jobs.filter(job => job.languages.includes(action.payload.language))
+      }
     default: 
       return state;
   }
