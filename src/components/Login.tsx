@@ -1,25 +1,33 @@
+import { Button, TextField } from "@material-ui/core";
 import axios from "axios";
+import { connect } from 'react-redux';
 import { Formik } from "formik";
-import React from "react";
+import React, { Dispatch, useEffect } from "react";
+import * as AuthActions from '../store/auth/duck/actions';
+import { RootState } from "MyTypes";
+import { selectUserId } from "../store/auth/duck/selectors";
+import { useHistory } from 'react-router-dom';
 
-export const Login: React.FC = () => {
+interface Props {
+  login: (email: string, password: string) => void;
+  userId: string;
+}
+const Login = ({
+  login,
+  userId,
+ }: Props) => {
 
+  const history = useHistory();
+  useEffect(()=> {
+    if(userId){
+      console.log("hi");
+      history.push('/');
+    }
+  },[
+    userId
+  ]);
   const onSubmit = (values: { email: any; password: any; }, { setSubmitting }: any) => {
-    axios
-      .post("http://localhost:4001/login", {
-        email: values.email,
-        password: values.password,
-      })
-      .then((response: any) => {
-        if (response.data.redirect === "/") {
-          window.location.href = "/";
-        } else if (response.data.redirect === "/login") {
-          window.location.href = "/login";
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    login(values.email, values.password);
     setSubmitting(false);
   };
   
@@ -34,27 +42,45 @@ export const Login: React.FC = () => {
     >
       {(props: {handleSubmit: any,handleChange: any, handleBlur: any }) => {
         return (
-          <form onSubmit={props.handleSubmit}>
-            <div>Login</div>
-            <label>Email:</label>
-            <input
-              type="text"
-              name="email"
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <label>Password:</label>
-            <input
-              type="password"
-              name="password"
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
+          <div className="w-full h-screen flex flex-col justify-center items-center">
+            <div className="border border-solid flex flex-col justify-center items-center p-10 w-1/4">
+              <h2>Login</h2>
+              <form onSubmit={props.handleSubmit}>
+                <div className="pt-2">
+                  <TextField name="email" id="email" label="Email" variant="outlined" size="small"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                  />
+                </div>
 
-            <button type="submit">Submit</button>
-          </form>
+                <div className="pt-2">
+                <TextField name="password" id="password" label="Password" variant="outlined" size="small"
+                    type="password"                  
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                />
+                </div>
+                <div className="pt-2">
+                  <Button color="primary" variant="contained" fullWidth type="submit">
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
         );
       }}
     </Formik>
   );
 };
+
+const mapStateToProps = (state: RootState, props?: any) => ({
+  userId: selectUserId(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  login: (email: string, password: string) => dispatch(AuthActions.login(email, password)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
+// export const ConnectedLogin = connect(mapDispatchToProps)(Login);

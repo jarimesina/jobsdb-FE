@@ -1,3 +1,4 @@
+import { Button, TextField } from "@material-ui/core";
 import axios from "axios";
 import { Formik } from "formik";
 import React from "react";
@@ -35,43 +36,52 @@ export const Register: React.FC = () => {
         password: "",
         email: "",
       }}
+      // TODO: add confirm password feature
       onSubmit={onSubmit}
     >
       {(props: {handleSubmit: any,handleChange: any, handleBlur: any }) => {
         return (
-          <form onSubmit={props.handleSubmit}>
-            <div>Register</div>
-            <label>First Name:</label>
-            <input
-              type="text"
-              name="firstName"
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <label>Last Name:</label>
-            <input
-              type="text"
-              name="lastName"
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <label>Email:</label>
-            <input
-              type="text"
-              name="email"
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
-            <label>Password:</label>
-            <input
-              type="password"
-              name="password"
-              onChange={props.handleChange}
-              onBlur={props.handleBlur}
-            />
+          <div className="w-full h-screen flex flex-col justify-center items-center">
+            <div className="border border-solid flex flex-col justify-center items-center p-10 w-1/4">
+              <h2>Sign Up</h2>
+              <form onSubmit={props.handleSubmit}>
+                <div className="pt-2">
+                  <TextField name="firstName" id="firstName" label="First Name" variant="outlined" size="small"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                  />
+                </div>
 
-            <button type="submit">Submit</button>
-          </form>
+                <div className="pt-2">
+                  <TextField name="lastName" id="lastName" label="Last Name" variant="outlined" size="small"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <TextField name="email" id="email" label="Email" variant="outlined" size="small"
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <TextField name="password" id="password" label="Password" variant="outlined" size="small"
+                    type="password"                  
+                    onChange={props.handleChange}
+                    onBlur={props.handleBlur}
+                  />
+                </div>
+
+                <div className="pt-2">
+                  <Button color="primary" variant="contained" fullWidth type="submit">
+                    Submit
+                  </Button>
+                </div>
+              </form>
+            </div>
+          </div>
         );
       }}
     </Formik>
