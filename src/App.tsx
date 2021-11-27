@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Register } from "./components/Register";
 import Home from "./components/Home";
-import { Login } from "./components/Login";
+import Login  from "./components/Login";
 import { SideBar } from "./components/shared/SideBar";
 import { CreateJob } from "./components/CreateJob";
 import { Provider } from "react-redux";
@@ -11,21 +11,20 @@ import store from "./store";
 export const App: React.FC = () => {
   return (
     <Provider store={store}>
-
-
-    <BrowserRouter>
-      {/* A <Switch> looks through its children <Route>s and
-              renders the first one that matches the current URL. */}
-      <Switch>
-        <Route exact path="/login">
-          <Login />
-        </Route>
-        <Route exact path="/signup">
-          <Register />
-        </Route>
-        <SideBar>
+      <BrowserRouter>
+        {/* A <Switch> looks through its children <Route>s and
+                renders the first one that matches the current URL. */}
+        <Switch>
+          <Route exact path="/login">
+            <Login />
+          </Route>
+          <Route exact path="/signup">
+            <Register />
+          </Route>
           <Route exact path="/createJob">
-            <CreateJob />
+            <SideBar>
+              <CreateJob />
+            </SideBar>
           </Route>
           <Route exact path="/register">
             <Register />
@@ -35,11 +34,12 @@ export const App: React.FC = () => {
           </Route>
           <Route exact path="/about">{/* <About /> */}</Route>
           <Route exact path="/">
-            <Home />
+            <SideBar>
+              <Home />
+            </SideBar>
           </Route>
-        </SideBar>
-      </Switch>
-    </BrowserRouter>
+        </Switch>
+      </BrowserRouter>
     </Provider>
   );
 };

@@ -21,7 +21,6 @@
         "@typescript-eslint"
     ],
     "rules": {
-        "code": 80,
         "@typescript-eslint/no-explicit-any": "off"
     }
 }

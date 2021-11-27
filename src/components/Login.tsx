@@ -1,26 +1,33 @@
 import { Button, TextField } from "@material-ui/core";
 import axios from "axios";
+import { connect } from 'react-redux';
 import { Formik } from "formik";
-import React from "react";
+import React, { Dispatch, useEffect } from "react";
+import * as AuthActions from '../store/auth/duck/actions';
+import { RootState } from "MyTypes";
+import { selectUserId } from "../store/auth/duck/selectors";
+import { useHistory } from 'react-router-dom';
 
-export const Login: React.FC = () => {
+interface Props {
+  login: (email: string, password: string) => void;
+  userId: string;
+}
+const Login = ({
+  login,
+  userId,
+ }: Props) => {
 
+  const history = useHistory();
+  useEffect(()=> {
+    if(userId){
+      console.log("hi");
+      history.push('/');
+    }
+  },[
+    userId
+  ]);
   const onSubmit = (values: { email: any; password: any; }, { setSubmitting }: any) => {
-    axios
-      .post("http://localhost:4001/login", {
-        email: values.email,
-        password: values.password,
-      })
-      .then((response: any) => {
-        if (response.data.redirect === "/") {
-          window.location.href = "/";
-        } else if (response.data.redirect === "/login") {
-          window.location.href = "/login";
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    login(values.email, values.password);
     setSubmitting(false);
   };
   
@@ -66,3 +73,14 @@ export const Login: React.FC = () => {
     </Formik>
   );
 };
+
+const mapStateToProps = (state: RootState, props?: any) => ({
+  userId: selectUserId(state),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  login: (email: string, password: string) => dispatch(AuthActions.login(email, password)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
+// export const ConnectedLogin = connect(mapDispatchToProps)(Login);

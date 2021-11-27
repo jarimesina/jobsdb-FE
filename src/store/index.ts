@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { all } from 'redux-saga/effects';
 import { JobSaga } from './jobs';
+import { AuthSaga } from './auth';
 import reducer from './reducer';
 
 const sagaMiddleware = createSagaMiddleware()
@@ -15,6 +16,7 @@ const store = createStore(reducer, composeEnhancers(
 function* rootSaga(){
   yield all([
     JobSaga(),
+    AuthSaga(),
   ]);
 }
 sagaMiddleware.run(rootSaga);

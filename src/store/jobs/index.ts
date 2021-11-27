@@ -2,6 +2,7 @@ import {
   watchFetchJobs
 } from './duck/saga';
 import { all } from 'redux-saga/effects';
+import JobsReducer from './duck/reducer';
 
 function* JobSaga() {
   yield all([
@@ -10,5 +11,6 @@ function* JobSaga() {
 }
 
 export {
-  JobSaga
+  JobSaga,
+  JobsReducer
 }
