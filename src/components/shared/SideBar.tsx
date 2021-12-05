@@ -1,6 +1,19 @@
-import React from "react";
+import React, { Dispatch } from "react";
+import { connect } from "react-redux";
+import * as AuthActions from '../../store/auth/duck/actions';
+import { setToken } from '../../api/axios';
+import { Cookies } from "react-cookie";
+import { useHistory } from 'react-router-dom';
 
-export const SideBar: React.FC = ({children}) => {
+interface Props{
+  logout: () => void;
+}
+
+const SideBar: React.FC<Props>  = ({children, logout}) => {
+
+  const cookies = new Cookies();
+  const history = useHistory();
+
   const items = [
     {
       routeName: 'My Profile'
@@ -13,6 +26,15 @@ export const SideBar: React.FC = ({children}) => {
     },
     {
       routeName: 'Edit Jobs'
+    },
+    {
+      routeName: 'Log Out',
+      onClick: () => {
+        cookies.remove('AUTH_KEY', {path: '/'});
+        setToken('');
+        // window.location.reload();
+        history.push('/register');
+      }
     }
   ]
   return (
@@ -21,7 +43,7 @@ export const SideBar: React.FC = ({children}) => {
       <ul className="text-white">
         {
           items.map((item, index)=> (
-            <li key={index} className="ml-4 mt-4">{item.routeName}</li>
+            <li key={index} className="ml-4 mt-4 hover: cursor-pointer" onClick={item.onClick}>{item.routeName}</li>
           ))
         }
       </ul>
@@ -31,3 +53,9 @@ export const SideBar: React.FC = ({children}) => {
     </div>
   </div>);
 };
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  logout: () => dispatch(AuthActions.logout()),
+});
+
+export default connect(mapDispatchToProps)(SideBar);

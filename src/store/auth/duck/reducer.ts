@@ -20,12 +20,14 @@ export default function reducer(state: State = initialState, action: AuthActions
         ...state,
         token: null,
         userId: null
-      }
+      };
     case AuthActions.LOGIN_SUCCESS: 
       return {
         ...state,
         ...action.payload
-      }
+      };
+    case AuthActions.LOGOUT: 
+      return initialState;
     default:
       return state;
   }

@@ -1,29 +1,30 @@
 import { Button, TextField } from "@material-ui/core";
-import axios from "axios";
 import { Formik } from "formik";
 import React from "react";
+import { useHistory } from 'react-router-dom';
+import * as AuthService from '../api/AuthService';
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const Register: React.FC = () => {
 
-  const onSubmit = (values: { firstName: any; lastName: any; email: any; password: any; }, { setSubmitting }: any) => {
-    axios
-      .post("http://localhost:4001/register", {
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password,
-      })
-      .then((response: any) => {
+  const history = useHistory();
+
+  const onSubmit = (values: { firstName: string; lastName: string; email: string; password: string; }, { setSubmitting }: any) => {
+    AuthService.signup(
+      values.firstName,
+      values.lastName,
+      values.email,
+      values.password,
+    ).then((response: any) => {
         if (response.data.redirect === "/") {
           window.location.href = "/";
         } else if (response.data.redirect === "/login") {
           window.location.href = "/login";
         }
       })
-      .catch((error) => {
-        console.log(error);
-      });
+    .catch((error) => {
+      console.log(error);
+    });
+    history.push('/');
     setSubmitting(false);
   };
 

@@ -12,20 +12,22 @@ interface Props {
   login: (email: string, password: string) => void;
   userId: string;
 }
+
 const Login = ({
   login,
   userId,
  }: Props) => {
 
   const history = useHistory();
+
   useEffect(()=> {
     if(userId){
-      console.log("hi");
       history.push('/');
     }
   },[
     userId
   ]);
+
   const onSubmit = (values: { email: any; password: any; }, { setSubmitting }: any) => {
     login(values.email, values.password);
     setSubmitting(false);
