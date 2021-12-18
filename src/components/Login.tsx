@@ -7,27 +7,36 @@ import * as AuthActions from '../store/auth/duck/actions';
 import { RootState } from "MyTypes";
 import { selectUserId } from "../store/auth/duck/selectors";
 import { useHistory } from 'react-router-dom';
+import Cookies from "react-cookie/cjs/Cookies";
 
 interface Props {
   login: (email: string, password: string) => void;
   userId: string;
 }
+
 const Login = ({
   login,
   userId,
  }: Props) => {
 
   const history = useHistory();
+
   useEffect(()=> {
     if(userId){
-      console.log("hi");
       history.push('/');
     }
   },[
     userId
   ]);
-  const onSubmit = (values: { email: any; password: any; }, { setSubmitting }: any) => {
-    login(values.email, values.password);
+
+  const onSubmit = async (values: { email: any; password: any; }, { setSubmitting }: any) => {
+    try{
+      login(values.email, values.password);
+      
+    }
+    catch(err){
+      console.log(err);
+    }
     setSubmitting(false);
   };
   

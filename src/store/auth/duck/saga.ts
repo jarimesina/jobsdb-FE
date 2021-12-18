@@ -1,3 +1,4 @@
+import { fetchProfile } from "./actions";
 import { setToken } from "./../../../api/axios";
 import { call, put, takeLatest } from "redux-saga/effects";
 import { ActionType } from "typesafe-actions";
@@ -23,4 +24,20 @@ export function* handleLogin(action: ActionType<typeof AuthService.login>) {
 
 export function* watchHandleLogin() {
   yield takeLatest(AuthActions.LOGIN, handleLogin);
+}
+
+export function* handleFetchProfile(action: ActionType<typeof AuthService.fetchProfile>) {
+  try {
+    const response: AxiosResponse = yield call(AuthService.fetchProfile);
+    const { data } = response;
+    console.log("data", data);
+    yield put(AuthActions.fetchProfileSuccess(data.data));
+  } catch (error) {
+    const cookies = new Cookies();
+    cookies.remove('AUTH_KEY', { path: '/'});
+  }
+}
+
+export function* watchFetchProfile() {
+  yield takeLatest(AuthActions.FETCH_PROFILE, handleFetchProfile);
 }

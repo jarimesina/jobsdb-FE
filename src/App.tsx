@@ -3,10 +3,12 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Register } from "./components/Register";
 import Home from "./components/Home";
 import Login  from "./components/Login";
-import { SideBar } from "./components/shared/SideBar";
+import SideBar from "./components/shared/SideBar";
 import { CreateJob } from "./components/CreateJob";
 import { Provider } from "react-redux";
 import store from "./store";
+import AuthenticatedRoutes from "./components/shared/AuthenticatedRoutes";
+import EditJobs from "./components/EditJobs";
 
 export const App: React.FC = () => {
   return (
@@ -32,12 +34,17 @@ export const App: React.FC = () => {
           <Route exact path="/login">
             <Login />
           </Route>
-          <Route exact path="/about">{/* <About /> */}</Route>
-          <Route exact path="/">
+          <Route exact path="/editJobs">
             <SideBar>
-              <Home />
+              <EditJobs />
             </SideBar>
           </Route>
+          <Route exact path="/about">{/* <About /> */}</Route>
+          <AuthenticatedRoutes path="/" >
+            <SideBar>
+              <Home/>
+            </SideBar>
+          </AuthenticatedRoutes>
         </Switch>
       </BrowserRouter>
     </Provider>
