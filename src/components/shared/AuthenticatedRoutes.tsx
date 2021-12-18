@@ -15,18 +15,13 @@ interface Props{
 const AuthenticatedRoutes: React.FC<Props> = (props) => {
   const cookies = new Cookies();
   
-  console.log(cookies.get('AUTH_KEY'));
   return (
-    // token && cookies.get('AUTH_KEY') ? 
-    // <Route {...rest} exact path={pathComponent}/> : 
-    // <Redirect />
 
     <Route
       exact
       path={props.path}
       render={routerProps =>
-        props.token && cookies.get('AUTH_KEY') ? (
-          // <Component/>
+        cookies.get('AUTH_KEY') ? (
           props.children
         ) : (
           <Redirect to={{pathname: '/login'}} />

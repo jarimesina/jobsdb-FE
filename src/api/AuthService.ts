@@ -14,3 +14,5 @@ export const signup = (firstName: string, lastName: string, email: string, passw
     password,
   }
 );
+
+export const fetchProfile = () => axios.get('http://localhost:4001/user/me');

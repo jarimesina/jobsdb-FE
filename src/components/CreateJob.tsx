@@ -9,6 +9,7 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
+import Cookies from "react-cookie/cjs/Cookies";
 
 export interface JobDetails {
   companyName: string,
@@ -40,12 +41,12 @@ export const programmingLanguages = [
   }
 ];
 
-export const CreateJob: React.FC = () => {
-
+export const CreateJob: React.FC= () => {
+  const cookies = new Cookies();
   const [isAlertOpen, setIsAlertOpen ] = useState(false);
+  const temp = cookies.get('AUTH_KEY');
 
   const onSubmit = (values: JobDetails, {setSubmitting}: any) => {
-    console.log("values",values);
     axios
       .post("http://localhost:4001/job", {
         companyName: values.companyName,
@@ -56,6 +57,8 @@ export const CreateJob: React.FC = () => {
         languages: values.languages,
         image: values.image,
         dateCreated: new Date(),
+      },{
+        headers: {"Authorization": `Bearer ${temp}`},
       })
       .then((response: any) => {
         if(response.data.message==="POST new job"){

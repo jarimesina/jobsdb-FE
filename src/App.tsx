@@ -8,6 +8,7 @@ import { CreateJob } from "./components/CreateJob";
 import { Provider } from "react-redux";
 import store from "./store";
 import AuthenticatedRoutes from "./components/shared/AuthenticatedRoutes";
+import EditJobs from "./components/EditJobs";
 
 export const App: React.FC = () => {
   return (
@@ -32,6 +33,11 @@ export const App: React.FC = () => {
           </Route>
           <Route exact path="/login">
             <Login />
+          </Route>
+          <Route exact path="/editJobs">
+            <SideBar>
+              <EditJobs />
+            </SideBar>
           </Route>
           <Route exact path="/about">{/* <About /> */}</Route>
           <AuthenticatedRoutes path="/" >
