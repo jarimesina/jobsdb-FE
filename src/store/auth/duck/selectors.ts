@@ -12,3 +12,8 @@ export const selectToken = createSelector(
   selectAuth,
   (auth) => auth.token,
 )
+
+export const selectProfile = createSelector(
+  selectAuth,
+  (auth) => auth.profile,
+)
