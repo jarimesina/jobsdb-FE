@@ -168,7 +168,6 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   fetchJobs: () => dispatch(JobActions.fetchJobs()),
-  filterJobsByDate: (date: string) => dispatch(JobActions.filterJobsByDate(date)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
