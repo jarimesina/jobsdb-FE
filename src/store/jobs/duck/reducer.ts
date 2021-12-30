@@ -24,6 +24,7 @@ export default function reducer(state: State = initialState, action: JobActions)
         ...state,
         jobs: action.payload.jobs
       };
+    // TODO: remove the FILTER_JOBS_BY_DATE and FILTER_JOBS_BY_LANGUAGE action creators since it is no longer necessary
     case JobActions.FILTER_JOBS_BY_DATE:
       return {
         ...state,
