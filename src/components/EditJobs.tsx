@@ -4,9 +4,7 @@ import React, { Dispatch, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { selectProfile, selectUserId } from "../store/auth/duck/selectors";
 import { selectJobsList } from "../store/jobs/duck/selectors";
-import { JobDetails } from "./CreateJob";
 import Modal from '@mui/material/Modal';
-import * as AuthActions from '../store/auth/duck/actions';
 import { TextField, TextareaAutosize, FormLabel } from '@material-ui/core';
 import { Formik } from 'formik';
 import { BasicTable } from './shared/BasicTable';
@@ -14,7 +12,6 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import * as JobService from '../api/JobService';
 import * as JobActions from '../store/jobs/duck/actions';
-import { getToken, setToken } from '../api/axios';
 
 interface Props{
   jobs: any[];
@@ -26,6 +23,8 @@ interface Props{
 // const EditJobs: React.FC<Props> = (jobs,userId) => {
 const EditJobs: React.FC<Props> = (props) => {
   const [openEditModal, setOpenEditModal] = useState(false);
+
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   const [selectedJob, setSelectedJob] = useState(null);
 
@@ -58,11 +57,44 @@ const EditJobs: React.FC<Props> = (props) => {
                   setSelectedJob(ownedJob);
                   setOpenEditModal(true);
                 }} variant="outlined">EDIT</Button>
-              <Button onClick={()=>{setOpenEditModal(true)}} variant="outlined" color="error">DELETE</Button>
+              <Button onClick={()=>{
+                  setSelectedJob(ownedJob);
+                  setOpenDeleteModal(true);
+                }} variant="outlined" color="error">DELETE</Button>
             </div>
           </TableCell>
         </TableRow>
       ))}/>
+
+      <Modal
+        open={openDeleteModal}
+        onClose={() => { setOpenDeleteModal(false)}}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <div className="absolute top-1/4 left-0 right-0 mx-auto	w-96 bg-white border-2 border-solid shadow-md p-4">
+          <div className="flex flex-col mb-3">
+            Are you sure?
+          </div>
+
+          <Button onClick={async () => {
+            try{
+              window.alert("Successfully deleted job.");
+              await JobService.deleteJob(selectedJob._id);
+            }
+            catch(err){
+              window.alert("Error in deleting job.");
+            }
+            finally{
+              setOpenDeleteModal(false);
+            }
+          }}>Yes</Button>
+          <Button onClick={() => {
+            setOpenDeleteModal(false);
+          }}>Cancel</Button>
+
+        </div>
+      </Modal>
       <Modal
         open={openEditModal}
         onClose={() => { setOpenEditModal(false)}}
