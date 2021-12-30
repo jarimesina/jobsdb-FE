@@ -6,19 +6,21 @@ import { selectProfile, selectUserId } from "../store/auth/duck/selectors";
 import { selectJobsList } from "../store/jobs/duck/selectors";
 import { JobDetails } from "./CreateJob";
 import Modal from '@mui/material/Modal';
-import { Cookies } from 'react-cookie';
 import * as AuthActions from '../store/auth/duck/actions';
 import { TextField, TextareaAutosize, FormLabel } from '@material-ui/core';
 import { Formik } from 'formik';
 import { BasicTable } from './shared/BasicTable';
 import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
+import * as JobService from '../api/JobService';
+import * as JobActions from '../store/jobs/duck/actions';
+import { getToken, setToken } from '../api/axios';
 
 interface Props{
   jobs: any[];
   userId: string;
-  fetchProfile: () => void;
   profile: any;
+  fetchJobs: () => void;
 }
 
 // const EditJobs: React.FC<Props> = (jobs,userId) => {
@@ -28,77 +30,118 @@ const EditJobs: React.FC<Props> = (props) => {
   const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(()=>{
-    if(props.fetchProfile){
-      props.fetchProfile();
+    if(props?.fetchJobs){
+      props.fetchJobs();
     }
-  }, [props?.fetchProfile, ]);
+  }, [props?.fetchJobs]);
 
   // call api to get all jobs associated to that user and put in store
   const ownedJobs = props?.jobs.filter((job: { owner: string; }) => (job.owner == props?.profile?._id));
 
   return (
-  <>
-    <BasicTable rowHeaders={["ID", "Company Name", "Title", "Actions"]} rowData={ownedJobs.map((ownedJob) => (
-      <TableRow
-        key={ownedJob._id}
-        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-      >
-        <TableCell component="th" scope="row" align="right">
-          {ownedJob._id}
-        </TableCell>
-        <TableCell align="right">{ownedJob.companyName}</TableCell>
-        <TableCell align="right">{ownedJob.title}</TableCell>
-        <TableCell align="right">
-          <div className="flex space-x-1">
-            <Button onClick={() => {
-                setSelectedJob(ownedJob);
-                setOpenEditModal(true);
-              }} variant="outlined">EDIT</Button>
-            <Button onClick={()=>{setOpenEditModal(true)}} variant="outlined" color="error">DELETE</Button>
-          </div>
-        </TableCell>
-      </TableRow>
-    ))}/>
-    <Modal
-      open={openEditModal}
-      onClose={() => { setOpenEditModal(false)}}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      <div className="absolute top-1/2 left-0 right-0 mx-auto	w-96 bg-white border-2 border-solid shadow-md p-4">
-        <Formik
-          validator={null}
-          initialValues={{
-            title: selectedJob?.title,
-            responsibilities: selectedJob?.responsibilities,
-          }}
-          onSubmit={null}
+    <>
+      <BasicTable rowHeaders={["ID", "Company Name", "Title", "Location", "Number of Employees", "Actions"]} rowData={ownedJobs.map((ownedJob) => (
+        <TableRow
+          key={ownedJob._id}
+          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
-          {({values, handleSubmit, handleChange, handleBlur}: {values: any, handleSubmit: any,handleChange: any, handleBlur: any }) => {
-            
-            return (
-              <>
-                <FormLabel>Title</FormLabel>
+          <TableCell component="th" scope="row" align="right">
+            {ownedJob._id}
+          </TableCell>
+          <TableCell align="right">{ownedJob.companyName}</TableCell>
+          <TableCell align="right">{ownedJob.title}</TableCell>
+          <TableCell align="right">{ownedJob.location}</TableCell>
+          <TableCell align="right">{ownedJob.numberOfEmployees}</TableCell>
+          <TableCell align="right">
+            <div className="flex space-x-1 justify-end">
+              <Button onClick={() => {
+                  setSelectedJob(ownedJob);
+                  setOpenEditModal(true);
+                }} variant="outlined">EDIT</Button>
+              <Button onClick={()=>{setOpenEditModal(true)}} variant="outlined" color="error">DELETE</Button>
+            </div>
+          </TableCell>
+        </TableRow>
+      ))}/>
+      <Modal
+        open={openEditModal}
+        onClose={() => { setOpenEditModal(false)}}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <div className="absolute top-1/4 left-0 right-0 mx-auto	w-96 bg-white border-2 border-solid shadow-md p-4">
+          <Formik
+            // validator={null}
+            initialValues={{
+              _id: "",
+              title: selectedJob?.title,
+              responsibilities: selectedJob?.responsibilities,
+              companyName: selectedJob?.companyName,
+              location: selectedJob?.location,
+              numberOfEmployees: selectedJob?.numberOfEmployees
+            }}
+            onSubmit={async (values) => {
+              try{
+                await JobService.editJob({...values, _id: selectedJob._id});
+                window.alert("Successfully editted job.");
+              }
+              catch(err){
+                window.alert("Error in editting job.");
+              }
+              finally{
+                setOpenEditModal(false);
+              }
+            }}
+          >
+            {({values, handleSubmit, handleChange, handleBlur}: {values: any, handleSubmit: any,handleChange: any, handleBlur: any }) => {
+              
+              return (
+                <>
+                  <div className="flex flex-col mb-3">
+                    <FormLabel>Title</FormLabel>
+                    <TextField name="title" id="title" variant="outlined" size="small"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.title}
+                    />
+                  </div>
 
-                <TextField name="title" id="title" variant="outlined" size="small"
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  value={values.title}
-                />
+                  <div className="flex flex-col mb-3">
+                    <FormLabel>Location</FormLabel>
+                    <TextField name="location" id="location" variant="outlined" size="small"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.location}
+                    />
+                  </div>
 
-                <FormLabel>Responsibilities</FormLabel>
-                <TextareaAutosize 
-                  maxRows={4}
-                  value={values.responsibilities}
-                  className="border border-solid border-gray"
-                />
-              </>
-            );
-          }}
-        </Formik>
-      </div>
-    </Modal>
-  </>);
+                  <div className="flex flex-col mb-3">
+                    <FormLabel>Number of Employees</FormLabel>
+                    <TextField name="numberOfEmployees" id="numberOfEmployees" variant="outlined" size="small"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.numberOfEmployees}
+                    />
+                  </div>
+
+                  <div className="flex flex-col mb-3">
+                    <FormLabel>Responsibilities</FormLabel>
+                    <TextareaAutosize 
+                      maxRows={4}
+                      value={values.responsibilities}
+                      className="border border-solid border-gray"
+                    />
+                  </div>
+
+                  <Button onClick={handleSubmit}>Submit</Button>
+                </>
+              );
+            }}
+          </Formik>
+        </div>
+      </Modal>
+    </>
+  );
 };
 
 const mapStateToProps = (state: RootState) => ({
@@ -109,7 +152,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => {
   return {
-    fetchProfile: () => dispatch(AuthActions.fetchProfile()),
+    fetchJobs: () => dispatch(JobActions.fetchJobs()),    
   }
 }
 

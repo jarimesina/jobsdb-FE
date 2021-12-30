@@ -11,7 +11,7 @@ export const setToken = (token: string) => {
 };
 
 export const getToken = () => {
-  instance.defaults.headers.common.Authorization?.replace(/^(Bearer)/, '');
+  return instance.defaults.headers.common.Authorization?.replace(/^(Bearer)/, '');
 };
 
 export const setLang = (lang: string) => {

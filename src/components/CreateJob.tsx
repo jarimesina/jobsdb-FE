@@ -44,7 +44,7 @@ export const programmingLanguages = [
 export const CreateJob: React.FC= () => {
   const cookies = new Cookies();
   const [isAlertOpen, setIsAlertOpen ] = useState(false);
-  const temp = cookies.get('AUTH_KEY');
+  const token = localStorage.getItem('AUTH_KEY');
 
   const onSubmit = (values: JobDetails, {setSubmitting}: any) => {
     axios
@@ -58,7 +58,7 @@ export const CreateJob: React.FC= () => {
         image: values.image,
         dateCreated: new Date(),
       },{
-        headers: {"Authorization": `Bearer ${temp}`},
+        headers: {"Authorization": `Bearer ${token}`},
       })
       .then((response: any) => {
         if(response.data.message==="POST new job"){

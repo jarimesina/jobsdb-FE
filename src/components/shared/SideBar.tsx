@@ -16,8 +16,12 @@ const SideBar: React.FC<Props>  = ({children, logout, fetchProfile}) => {
   const history = useHistory();
 
   useEffect(() => {
-    fetchProfile();
-  }, [fetchProfile]);
+    const token = localStorage.getItem("AUTH_KEY");
+    setToken(token);
+    if(token && fetchProfile){
+      fetchProfile();
+    }
+  }, [localStorage.getItem("AUTH_KEY"), fetchProfile]);
 
   const items = [
     {
@@ -47,6 +51,7 @@ const SideBar: React.FC<Props>  = ({children, logout, fetchProfile}) => {
       onClick: () => {
         logout();
         cookies.remove('AUTH_KEY', {path: '/'});
+        localStorage.removeItem('AUTH_KEY');
         setToken('');
         // window.location.reload();
         history.push('/register');

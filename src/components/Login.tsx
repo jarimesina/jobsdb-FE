@@ -7,7 +7,6 @@ import * as AuthActions from '../store/auth/duck/actions';
 import { RootState } from "MyTypes";
 import { selectUserId } from "../store/auth/duck/selectors";
 import { useHistory } from 'react-router-dom';
-import Cookies from "react-cookie/cjs/Cookies";
 
 interface Props {
   login: (email: string, password: string) => void;
