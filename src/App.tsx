@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import store from "./store";
 import AuthenticatedRoutes from "./components/shared/AuthenticatedRoutes";
 import EditJobs from "./components/EditJobs";
+import './App.css';
 
 export const App: React.FC = () => {
   return (

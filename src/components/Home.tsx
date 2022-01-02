@@ -10,6 +10,8 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Button from '@mui/material/Button';
 import moment from 'moment';
+import Briefcase from '../images/briefcase.svg';
+import Building from '../images/building.svg';
 
 interface Props {
   jobs: JobDetails[];
@@ -23,10 +25,12 @@ const Home = ({
   const [language, setLanguage] = useState('');
   const [time, setTime] = useState('');
   const [displayedJobs, setDisplayedJobs] = useState([]);
+  const [selectedJob, setSelectedJob] = useState(null);
 
   useEffect(() => {
     if(jobs){
       setDisplayedJobs(jobs);
+      setSelectedJob(jobs[0]);
     }
   }, [jobs]);
 
@@ -89,6 +93,10 @@ const Home = ({
     }
   }
 
+  const handleJobClick = (job: any) => {
+    setSelectedJob(job);
+  }
+  
   return (
     <>
       <div className="flex flex-row space-x-2 p-2">
@@ -131,21 +139,21 @@ const Home = ({
           </FormControl>
         </div>
         <div className="justify-center items-center flex">
-          <Button variant="contained"  onClick={handleReset}>Reset</Button>
+          <Button variant="contained" onClick={handleReset}>Reset</Button>
         </div>
       </div>
       <div className="bg-gray-100">
         <div className="flex flex-row mx-2 h-screen">
-          <div className="w-4/12 flex flex-col overflow-y-auto">
+          <div className="w-4/12 flex flex-col overflow-y-auto mb-16">
             {
               displayedJobs.map((job: JobDetails,idx: any)=>{
                 return (
-                <div key={idx} className="flex flex-row bg-blue-100 py-3 px-2">
+                <div key={idx} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
                   <div className="w-3/12 flex justify-center">
                     <img className="rounded-full h-14 w-14" src={job.image || "https://picsum.photos/200/300"}/>
                   </div>
-                  <div className="w-9/12 border-b-2 border-red-200 pb-2">
-                    <h1>{job.title || 'n/a'}</h1>
+                  <div className="w-9/12 border-b-2 border-gray-200 pb-2">
+                    <h1 className="text-blue-400 group-hover:underline">{job.title || 'n/a'}</h1>
                     <h2>{job.companyName || 'n/a'}</h2>
                     <h2>{job.location || 'n/a'}</h2>
                   </div>
@@ -153,8 +161,49 @@ const Home = ({
               })
             }
           </div>
-          <div className="w-8/12 bg-red-500 h-screen sticky">
-            
+          <div className="w-8/12 bg-white h-screen sticky">
+            {
+              selectedJob && (
+                <div className="p-5">
+                  <div className="text-2xl">{selectedJob.title}</div>
+                  <div className="text-md mt-2">{selectedJob.companyName + " | " + selectedJob.location + " | " + moment(selectedJob.dateCreated).format("DD-MM-YYYY")}</div>
+
+                  <div className="mt-5 mb-2">
+                    <div className="mt-2 flex space-x-2">
+                      <div className="flex items-center">
+                        <img src={Briefcase} alt="React Logo" width={20}/>
+                      </div>
+                      <span>
+                        Full-time
+                      </span>
+                    </div>
+                    <div className="mt-2 flex space-x-2">
+                      <div className="flex items-center">
+                        <img src={Building} alt="React Logo" width={20}/>
+                      </div>
+                      <span>
+                        1-10 Employees
+                      </span>
+                    </div>
+                    <div className="mt-5 flex flex-row space-x-3">
+                      <div>
+                        <Button variant="outlined" className="rounded-lg">Apply</Button>
+                      </div>
+
+                      <div>
+                        <Button variant="contained" className="rounded-lg">Save</Button>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div>Responsibilities:</div>
+                    <pre>
+                      {selectedJob.responsibilities}
+                    </pre>
+                  </div>
+                </div>
+              )
+            }
           </div>
         </div>
       </div> 
