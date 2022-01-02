@@ -12,6 +12,11 @@ import TableRow from '@mui/material/TableRow';
 import TableCell from '@mui/material/TableCell';
 import * as JobService from '../api/JobService';
 import * as JobActions from '../store/jobs/duck/actions';
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import { EMPLOYEE_COUNT } from './CreateJob';
 
 interface Props{
   jobs: any[];
@@ -38,7 +43,7 @@ const EditJobs: React.FC<Props> = (props) => {
   const ownedJobs = props?.jobs.filter((job: { owner: string; }) => (job.owner == props?.profile?._id));
 
   return (
-    <>
+    <div className="p-10">
       <BasicTable rowHeaders={["ID", "Company Name", "Title", "Location", "Number of Employees", "Actions"]} rowData={ownedJobs.map((ownedJob) => (
         <TableRow
           key={ownedJob._id}
@@ -110,7 +115,7 @@ const EditJobs: React.FC<Props> = (props) => {
               responsibilities: selectedJob?.responsibilities,
               companyName: selectedJob?.companyName,
               location: selectedJob?.location,
-              numberOfEmployees: selectedJob?.numberOfEmployees
+              numberOfEmployees: selectedJob?.numberOfEmployees,
             }}
             onSubmit={async (values) => {
               try{
@@ -129,7 +134,8 @@ const EditJobs: React.FC<Props> = (props) => {
               
               return (
                 <>
-                  <div className="flex flex-col mb-3">
+                  <div>Edit Form</div>
+                  <div className="flex flex-col mb-3 mt-2">
                     <FormLabel>Title</FormLabel>
                     <TextField name="title" id="title" variant="outlined" size="small"
                       onChange={handleChange}
@@ -148,12 +154,27 @@ const EditJobs: React.FC<Props> = (props) => {
                   </div>
 
                   <div className="flex flex-col mb-3">
-                    <FormLabel>Number of Employees</FormLabel>
+                    {/* <FormLabel>Number of Employees</FormLabel>
                     <TextField name="numberOfEmployees" id="numberOfEmployees" variant="outlined" size="small"
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.numberOfEmployees}
-                    />
+                    /> */}
+                    <div className="">
+                      <FormControl fullWidth variant="standard">
+                        <InputLabel id="demo-simple-select-label">Number of Employees</InputLabel>
+                        <Select
+                          name="numberOfEmployees" id="numberOfEmployees"
+                          value={values.numberOfEmployees}
+                          label="Number of Employees"
+                          onChange={handleChange}
+                        >
+                          {EMPLOYEE_COUNT.map(number => (
+                            <MenuItem value={number.value} key={number.name}>{number.value}</MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                    </div>
                   </div>
 
                   <div className="flex flex-col mb-3">
@@ -172,7 +193,7 @@ const EditJobs: React.FC<Props> = (props) => {
           </Formik>
         </div>
       </Modal>
-    </>
+    </div>
   );
 };
 

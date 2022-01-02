@@ -1,6 +1,5 @@
-import axios from "axios";
 import { Formik } from "formik";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { JdInput } from "./shared/JdInput";
 import { JdSelect } from "./shared/JdSelect";
 import { JdTextArea } from "./shared/JdTextArea";
@@ -10,8 +9,15 @@ import AlertTitle from '@mui/material/AlertTitle';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
 import Cookies from "react-cookie/cjs/Cookies";
+import CloseIcon from "../../src/images/closeIcon.svg";
+import * as JobService from "../api/JobService";
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
 
 export interface JobDetails {
+  _id?: string,
   companyName: string,
   title: string,
   responsibilities: string, // text area
@@ -19,10 +25,15 @@ export interface JobDetails {
   numberOfEmployees: string,
   languages: string[],
   image: string,
+  requirements: string,
   dateCreated?: string,
 }
 
 export const programmingLanguages = [
+  {
+    value: '',
+    name: 'Select a language'
+  },
   {
     value: 'React',
     name: 'React'
@@ -41,14 +52,37 @@ export const programmingLanguages = [
   }
 ];
 
+export const EMPLOYEE_COUNT = [
+  {
+    value: '1-10',
+    name: 'oneToTen'
+  },
+  {
+    value: '11-50',
+    name: 'elevenToFifty'
+  },
+  {
+    value: '51-200',
+    name: 'fiftyOneToTwoHundred'
+  },
+  {
+    value: '501-1,000',
+    name: 'fiveHundredOneToOneThousand'
+  },
+  {
+    value: '1,001-5,000',
+    name: 'oneThousandOneToFiveThousand'
+  },
+];
+
 export const CreateJob: React.FC= () => {
   const cookies = new Cookies();
   const [isAlertOpen, setIsAlertOpen ] = useState(false);
-  const token = localStorage.getItem('AUTH_KEY');
+  const [employeeNumber, setEmployeeNumber] = useState();
 
   const onSubmit = (values: JobDetails, {setSubmitting}: any) => {
-    axios
-      .post("http://localhost:4001/job", {
+    JobService.createJob(  
+      {
         companyName: values.companyName,
         title: values.title,
         responsibilities: values.responsibilities,
@@ -56,23 +90,26 @@ export const CreateJob: React.FC= () => {
         numberOfEmployees: values.numberOfEmployees,
         languages: values.languages,
         image: values.image,
-        dateCreated: new Date(),
-      },{
-        headers: {"Authorization": `Bearer ${token}`},
-      })
-      .then((response: any) => {
-        if(response.data.message==="POST new job"){
-          setIsAlertOpen(true);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    setSubmitting(false);
+        requirements: values.requirements,
+        dateCreated: new Date()
+      }
+    )
+    .then((response) => {
+      if(response.data.status=="200"){
+        setIsAlertOpen(true);
+        setInterval(() => {setIsAlertOpen(false);}, 1000);
+      }
+    })
+    .catch((err: any) => {
+      console.log(err);
+    })
+    .finally(() => {
+      setSubmitting(false);
+    });
   };
 
   const handleOnChange = (e: any, setFieldValue: (val: string, languages: string[]) => void, languages: string[]) => {
-    if( !languages.includes(e.target.value)){
+    if( !languages.includes(e.target.value) && e.target.value !== ""){
       setFieldValue("languages", [...languages, e.target.value]);
     }
   }
@@ -81,12 +118,11 @@ export const CreateJob: React.FC= () => {
     setFieldValue("languages", [...languages.filter((language) => languageToDelete !== language)])
   }
 
-  return (
-    <div>
-      {
-        isAlertOpen && (
-          <Collapse in={isAlertOpen}>
-            <Alert severity="success"
+  const AlertDropdown = useMemo(() => {
+    if(isAlertOpen){
+      return (
+        <Collapse in={isAlertOpen}>
+          <Alert severity="success"
             action={
               <IconButton
                 aria-label="close"
@@ -96,15 +132,26 @@ export const CreateJob: React.FC= () => {
                   setIsAlertOpen(false);
                 }}
               >
-                x
+                <img src={CloseIcon} alt="React Logo" width={20}/>
               </IconButton>
             }
-            >
-              <AlertTitle>Success</AlertTitle>
-              Job successfully created!
-            </Alert>
-          </Collapse>
-        )
+          >
+            <AlertTitle>Success</AlertTitle>
+            Job successfully created!
+          </Alert>
+        </Collapse>
+      );
+    }
+  }, [isAlertOpen]);
+
+  const handleChange = (event: any, cb: { (value: (prevState: undefined) => undefined): void; (arg0: any): void; }) => {
+    cb(event.target.value);
+  };
+
+  return (
+    <div>
+      {
+        AlertDropdown
       }
       <Formik
         validator={null}
@@ -115,7 +162,8 @@ export const CreateJob: React.FC= () => {
           location: "",
           numberOfEmployees: "",
           languages: [],
-          image: ""
+          image: "",
+          requirements: ""
         }}
         onSubmit={onSubmit}
       >
@@ -123,7 +171,7 @@ export const CreateJob: React.FC= () => {
           return (
             <form onSubmit={props.handleSubmit}>
               <div className="mx-auto w-1/2 mt-10">
-                <h1>Create a new job</h1>
+                <span className="text-lg font-bold">Create a new job</span>
                 <div className="flex justify-center flex-col">
                   <div className="flex flex-row justify-between space-x-2">
                     <div className="flex flex-col">
@@ -165,11 +213,34 @@ export const CreateJob: React.FC= () => {
                   </span>
 
                   <div className="mt-2">
+                    <FormControl fullWidth variant="standard">
+                      <InputLabel id="demo-simple-select-label">Number of Employees</InputLabel>
+                      <Select
+                        labelId="demo-simple-select-label"
+                        id="demo-simple-select"
+                        value={employeeNumber}
+                        label="Number of Employees"
+                        onChange={(e) => {
+                          handleChange(e, setEmployeeNumber)
+                        }}
+                      >
+                        {EMPLOYEE_COUNT.map(number => (
+                          <MenuItem value={number.value} key={number.name}>{number.value}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
+
+                  <div className="mt-2">
                    <JdTextArea formikName="responsibilities" onChange={props.handleChange} label="Responsibilities:"/>
                   </div>
 
                   <div className="mt-2">
                     <JdTextArea formikName="location" onChange={props.handleChange} label="Location:" />
+                  </div>
+
+                  <div className="mt-2">
+                   <JdTextArea formikName="requirements" onChange={props.handleChange} label="Requirements:"/>
                   </div>
 
                 </div>
