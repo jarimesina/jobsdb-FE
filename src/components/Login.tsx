@@ -6,7 +6,7 @@ import React, { Dispatch, useEffect } from "react";
 import * as AuthActions from '../store/auth/duck/actions';
 import { RootState } from "MyTypes";
 import { selectUserId } from "../store/auth/duck/selectors";
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 interface Props {
   login: (email: string, password: string) => void;
@@ -73,7 +73,16 @@ const Login = ({
                     Submit
                   </Button>
                 </div>
+
+                <div>
+                  <div className="flex justify-center text-sm text-blue-500 mt-2">
+                    Forgot Password?
+                  </div>
+                </div>
               </form>
+            </div>
+            <div>
+              Need an account? <span className="text-sm text-blue-500 mt-2"><Link to="/register">Sign Up</Link></span>
             </div>
           </div>
         );
