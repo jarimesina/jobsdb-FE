@@ -29,6 +29,14 @@ const SideBar: React.FC<Props>  = ({children, logout, fetchProfile}) => {
 
     },
     {
+      routeName: 'My Saved Jobs',
+
+    },
+    {
+      routeName: 'Applied Jobs',
+
+    },
+    {
       routeName: 'Find Jobs',
       onClick: () => {
         history.push('/');

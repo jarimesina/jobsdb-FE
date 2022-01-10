@@ -201,6 +201,22 @@ const Home = ({
                       {selectedJob.responsibilities}
                     </pre>
                   </div>
+                  <div>
+                    <div>Requirements:</div>
+                    <pre>
+                      {selectedJob.requirements}
+                    </pre>
+                  </div>
+
+                  {/* company overview section */}
+                  <div>
+                    <div>
+                      Company Email: {selectedJob && selectedJob.owner?.email}
+                    </div>
+                    <div>
+                      Company Overview: {selectedJob && selectedJob.owner?.info?.about}
+                    </div>
+                  </div>
                 </div>
               )
             }

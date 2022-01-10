@@ -1,8 +1,11 @@
 import { Button, TextField } from "@material-ui/core";
 import { Formik } from "formik";
 import React from "react";
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import * as AuthService from '../api/AuthService';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
 
 export const Register: React.FC = () => {
 
@@ -36,6 +39,7 @@ export const Register: React.FC = () => {
         lastName: "",
         password: "",
         email: "",
+        isEmployer: false,
       }}
       // TODO: add confirm password feature
       onSubmit={onSubmit}
@@ -75,11 +79,26 @@ export const Register: React.FC = () => {
                   />
                 </div>
 
+                <div>
+                  <FormGroup>
+                    <FormControlLabel control={<Checkbox defaultChecked name="isEmployer" id="isEmployer" onChange={props.handleChange}/>} label="Register as Employer" />
+                  </FormGroup>
+                </div>
+
                 <div className="pt-2">
                   <Button color="primary" variant="contained" fullWidth type="submit">
                     Submit
                   </Button>
                 </div>
+
+                <div className="w-full">
+                  <Link to="/login">
+                    <div className="flex justify-start text-sm text-blue-500 mt-1">
+                      I already have an account
+                    </div>
+                  </Link>
+                </div>
+
               </form>
             </div>
           </div>

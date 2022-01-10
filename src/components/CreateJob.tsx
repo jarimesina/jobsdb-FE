@@ -81,21 +81,21 @@ export const CreateJob: React.FC= () => {
   const [employeeNumber, setEmployeeNumber] = useState();
 
   const onSubmit = (values: JobDetails, {setSubmitting}: any) => {
-    JobService.createJob(  
+    JobService.createJob(
       {
         companyName: values.companyName,
         title: values.title,
         responsibilities: values.responsibilities,
+        requirements: values.requirements,
         location: values.location,
         numberOfEmployees: values.numberOfEmployees,
         languages: values.languages,
         image: values.image,
-        requirements: values.requirements,
         dateCreated: new Date()
       }
     )
     .then((response) => {
-      if(response.data.status=="200"){
+      if(response.status== 200){
         setIsAlertOpen(true);
         setInterval(() => {setIsAlertOpen(false);}, 1000);
       }
@@ -118,40 +118,31 @@ export const CreateJob: React.FC= () => {
     setFieldValue("languages", [...languages.filter((language) => languageToDelete !== language)])
   }
 
-  const AlertDropdown = useMemo(() => {
-    if(isAlertOpen){
-      return (
-        <Collapse in={isAlertOpen}>
-          <Alert severity="success"
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setIsAlertOpen(false);
-                }}
-              >
-                <img src={CloseIcon} alt="React Logo" width={20}/>
-              </IconButton>
-            }
-          >
-            <AlertTitle>Success</AlertTitle>
-            Job successfully created!
-          </Alert>
-        </Collapse>
-      );
-    }
-  }, [isAlertOpen]);
-
-  const handleChange = (event: any, cb: { (value: (prevState: undefined) => undefined): void; (arg0: any): void; }) => {
-    cb(event.target.value);
-  };
-
   return (
     <div>
       {
-        AlertDropdown
+        isAlertOpen && (
+          // change this into a snackbar type on the lower left of the screen
+          <Collapse in={isAlertOpen}>
+            <Alert severity="success"
+              action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                    setIsAlertOpen(false);
+                  }}
+                >
+                  <img src={CloseIcon} alt="React Logo" width={20}/>
+                </IconButton>
+              }
+            >
+              <AlertTitle>Success</AlertTitle>
+              Job successfully created!
+            </Alert>
+          </Collapse>
+        )
       }
       <Formik
         validator={null}
@@ -216,13 +207,11 @@ export const CreateJob: React.FC= () => {
                     <FormControl fullWidth variant="standard">
                       <InputLabel id="demo-simple-select-label">Number of Employees</InputLabel>
                       <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        value={employeeNumber}
+                        name="numberOfEmployees"
+                        id="numberOfEmployees"
+                        value={props.values.numberOfEmployees}
                         label="Number of Employees"
-                        onChange={(e) => {
-                          handleChange(e, setEmployeeNumber)
-                        }}
+                        onChange={props.handleChange}
                       >
                         {EMPLOYEE_COUNT.map(number => (
                           <MenuItem value={number.value} key={number.name}>{number.value}</MenuItem>
