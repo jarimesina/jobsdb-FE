@@ -7,3 +7,8 @@ export const selectJobsList = createSelector(
   selectJobs,
   (jobs) => jobs.jobs,
 );
+
+export const selectTotalJobs = createSelector(
+  selectJobs,
+  (jobs) => jobs.total,
+);

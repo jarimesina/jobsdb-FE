@@ -7,8 +7,8 @@ export const FILTER_JOBS_BY_DATE = 'job/FILTER_JOBS_BY_DATE';
 export const FILTER_JOBS_BY_LANGUAGE = 'job/FILTER_JOBS_BY_LANGUAGE';
 export const FETCH_CREATED_JOBS = 'job/FETCH_CREATED_JOBS';
 
-export const fetchJobs = () => action(FETCH_JOBS);
-export const fetchJobsSuccess = (jobs: { data: JobDetails[]}) => action(FETCH_JOBS_SUCCESS, { jobs: jobs.data });
+export const fetchJobs = (skip?: number, limit?: number) => action(FETCH_JOBS, { skip, limit});
+export const fetchJobsSuccess = (jobs: { jobs: JobDetails[], total: number}) => action(FETCH_JOBS_SUCCESS, { jobs: jobs.jobs, total: jobs.total });
 export const filterJobsByDate = (datePosted: string) => action(FILTER_JOBS_BY_DATE, { datePosted });
 export const filterJobsByLanguage = (language: string) => action(FILTER_JOBS_BY_LANGUAGE, { language });
 export const fetchCreatedJobs = (id: string) => action(FETCH_CREATED_JOBS, {id});

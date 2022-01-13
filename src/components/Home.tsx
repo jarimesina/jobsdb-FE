@@ -2,7 +2,7 @@ import { RootState } from "MyTypes";
 import React, { Dispatch, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as JobActions from '../store/jobs/duck/actions';
-import { selectJobsList } from "../store/jobs/duck/selectors";
+import { selectJobsList, selectTotalJobs } from "../store/jobs/duck/selectors";
 import { JobDetails, programmingLanguages } from "./CreateJob";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
@@ -12,20 +12,26 @@ import Button from '@mui/material/Button';
 import moment from 'moment';
 import Briefcase from '../images/briefcase.svg';
 import Building from '../images/building.svg';
+import TablePagination from '@mui/material/TablePagination';
 
 interface Props {
   jobs: JobDetails[];
-  fetchJobs: () => void;
+  total: number;
+  fetchJobs: (skip?: number, limit?: number) => void;
 }
 
 const Home = ({
   jobs,
+  total,
   fetchJobs,
 }: Props) => {
+  console.log("total", total);
   const [language, setLanguage] = useState('');
   const [time, setTime] = useState('');
   const [displayedJobs, setDisplayedJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
   useEffect(() => {
     if(jobs){
@@ -60,11 +66,11 @@ const Home = ({
   const handleReset = () => {
     setLanguage('');
     setTime('');
-    fetchJobs();
+    fetchJobs(0,10);
   }
 
   useEffect(() => {
-    fetchJobs()
+    fetchJobs(page,rowsPerPage)
   }, [fetchJobs]);
 
   const filterJobsByLanguage = (lang: string) => {
@@ -97,6 +103,11 @@ const Home = ({
     setSelectedJob(job);
   }
   
+  const handleChangePage = (event: any, newPage: any) => {
+    fetchJobs(newPage, rowsPerPage);
+    setPage(newPage);
+  };
+
   return (
     <>
       <div className="flex flex-row space-x-2 p-2">
@@ -144,23 +155,36 @@ const Home = ({
       </div>
       <div className="bg-gray-100">
         <div className="flex flex-row mx-2 h-screen">
-          <div className="w-4/12 flex flex-col overflow-y-auto mb-16">
-            {
-              displayedJobs.map((job: JobDetails,idx: any)=>{
-                return (
-                <div key={idx} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
-                  <div className="w-3/12 flex justify-center">
-                    <img className="rounded-full h-14 w-14" src={job.image || "https://picsum.photos/200/300"}/>
-                  </div>
-                  <div className="w-9/12 border-b-2 border-gray-200 pb-2">
-                    <h1 className="text-blue-400 group-hover:underline">{job.title || 'n/a'}</h1>
-                    <h2>{job.companyName || 'n/a'}</h2>
-                    <h2>{job.location || 'n/a'}</h2>
-                  </div>
-                </div>)
-              })
-            }
+          <div className="w-5/12 flex flex-col">
+            <div className="flex flex-col overflow-y-auto">
+              {
+                displayedJobs.map((job: JobDetails,idx: any)=>{
+                  return (
+                  <div key={idx} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
+                    <div className="w-3/12 flex justify-center">
+                      <img className="rounded-full h-14 w-14" src={job.image || "https://picsum.photos/200/300"}/>
+                    </div>
+                    <div className="w-9/12 border-b-2 border-gray-200 pb-2">
+                      <h1 className="text-blue-400 group-hover:underline">{job.title || 'n/a'}</h1>
+                      <h2>{job.companyName || 'n/a'}</h2>
+                      <h2>{job.location || 'n/a'}</h2>
+                    </div>
+                  </div>)
+                })
+              }
+            </div>
+            <div>
+              <TablePagination
+                component="div"
+                count={total}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={null}
+              />
+            </div>
           </div>
+
           <div className="w-8/12 bg-white h-screen sticky">
             {
               selectedJob && (
@@ -228,11 +252,12 @@ const Home = ({
 };
 
 const mapStateToProps = (state: RootState) => ({
-  jobs: selectJobsList(state)
-})
+  jobs: selectJobsList(state),
+  total: selectTotalJobs(state),
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  fetchJobs: () => dispatch(JobActions.fetchJobs()),
+  fetchJobs: (skip?: number, limit?: number) => dispatch(JobActions.fetchJobs(skip, limit)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -4,10 +4,12 @@ import * as JobActions from './actions';
 
 export interface State {
   jobs: JobDetails[];
+  total: number;
 }
 
 const initialState: State = {
   jobs: [],
+  total: 0
 }
 
 type JobActions = ActionType<typeof JobActions>
@@ -17,12 +19,14 @@ export default function reducer(state: State = initialState, action: JobActions)
     case JobActions.FETCH_JOBS:
       return {
         ...state,
-        jobs: []
+        jobs: [],
+        total: 0,
       };
     case JobActions.FETCH_JOBS_SUCCESS:
       return {
         ...state,
-        jobs: action.payload.jobs
+        jobs: action.payload.jobs,
+        total: action.payload.total
       };
     // TODO: remove the FILTER_JOBS_BY_DATE and FILTER_JOBS_BY_LANGUAGE action creators since it is no longer necessary
     case JobActions.FILTER_JOBS_BY_DATE:
