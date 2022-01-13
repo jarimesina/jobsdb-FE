@@ -31,7 +31,7 @@ export interface JobDetails {
 
 export const programmingLanguages = [
   {
-    value: '',
+    value: 'Select a language',
     name: 'Select a language'
   },
   {

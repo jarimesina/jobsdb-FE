@@ -6,8 +6,8 @@ import { ActionType } from "typesafe-actions";
 
 export function* handleFetchJobs(action: ActionType<typeof JobService.fetchJobs>) {
   try {
-    const { payload: { skip, limit}} = action;
-    const response: AxiosResponse = yield call(JobService.fetchJobs, skip, limit);
+    const { payload: { skip, limit, language, dateRange}} = action;
+    const response: AxiosResponse = yield call(JobService.fetchJobs, skip, limit, language, dateRange);
     yield put(JobActions.fetchJobsSuccess({jobs: response.data.data.jobs, total: response.data.data.total}));
   } catch (e) {
     //  yield put({type: "JOB_FETCH_FAILED", message: e.message});
