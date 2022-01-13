@@ -1,7 +1,7 @@
 import axios from "./axios";
 
-export const fetchJobs = () => {
-  return axios.get('http://localhost:4001/jobs');
+export const fetchJobs = (skip?: number, limit?: number) => {
+  return axios.get(`http://localhost:4001/jobs?skip=${skip || 0}&limit=${limit || 0}`);
 }
 
 export const createJob = (values: any) => {

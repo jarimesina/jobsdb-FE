@@ -10,6 +10,7 @@ import store from "./store";
 import AuthenticatedRoutes from "./components/shared/AuthenticatedRoutes";
 import EditJobs from "./components/EditJobs";
 import './App.css';
+import { Profile } from "./components/Profile";
 
 export const App: React.FC = () => {
   return (
@@ -18,6 +19,10 @@ export const App: React.FC = () => {
         {/* A <Switch> looks through its children <Route>s and
                 renders the first one that matches the current URL. */}
         <Switch>
+          <Route exact path="/myProfile">
+            {/* TODO: depending on the role the user should display company profile or  */}
+            <Profile />
+          </Route>
           <Route exact path="/login">
             <Login />
           </Route>
