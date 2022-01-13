@@ -25,7 +25,6 @@ const Home = ({
   total,
   fetchJobs,
 }: Props) => {
-  console.log("total", total);
   const [language, setLanguage] = useState('');
   const [dateRange, setDateRange] = useState('');
   const [displayedJobs, setDisplayedJobs] = useState([]);
