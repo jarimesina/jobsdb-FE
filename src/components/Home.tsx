@@ -17,7 +17,7 @@ import TablePagination from '@mui/material/TablePagination';
 interface Props {
   jobs: JobDetails[];
   total: number;
-  fetchJobs: (skip?: number, limit?: number) => void;
+  fetchJobs: (skip?: number, limit?: number, language?: string, dateRange?: string) => void;
 }
 
 const Home = ({
@@ -25,9 +25,8 @@ const Home = ({
   total,
   fetchJobs,
 }: Props) => {
-  console.log("total", total);
   const [language, setLanguage] = useState('');
-  const [time, setTime] = useState('');
+  const [dateRange, setDateRange] = useState('');
   const [displayedJobs, setDisplayedJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
   const [page, setPage] = React.useState(0);
@@ -40,8 +39,14 @@ const Home = ({
     }
   }, [jobs]);
 
-  const handleChange = (event: any, cb: { (value: React.SetStateAction<string>): void; (arg0: any): void; }) => {
+  const handleChangeLanguage = (event: any, cb: { (value: React.SetStateAction<string>): void; (arg0: any): void; }) => {
     cb(event.target.value);
+    fetchJobs(page, rowsPerPage, event.target.value, dateRange);
+  };
+
+  const handleChangeDate = (event: any, cb: { (value: React.SetStateAction<string>): void; (arg0: any): void; }) => {
+    cb(event.target.value);
+    fetchJobs(page, rowsPerPage, language, event.target.value);
   };
 
   const timeArr = [
@@ -65,46 +70,20 @@ const Home = ({
 
   const handleReset = () => {
     setLanguage('');
-    setTime('');
-    fetchJobs(0,10);
+    setDateRange('');
+    fetchJobs(0, 10, '', '');
   }
 
   useEffect(() => {
-    fetchJobs(page,rowsPerPage)
+    fetchJobs(page, rowsPerPage, language, dateRange);
   }, [fetchJobs]);
-
-  const filterJobsByLanguage = (lang: string) => {
-    setDisplayedJobs(jobs.filter((job) => job.languages.includes(lang)));
-  }
-
-  const filterJobsByDate = (date: string) => {
-    const now = new Date();
-    if(date == "today"){
-      setDisplayedJobs(jobs.filter((job) => {    
-        return moment(job.dateCreated).format('YYYY-MM-dd') === moment().format('YYYY-MM-dd');
-      }));
-    }
-    else if(date == "pastMonth"){
-      setDisplayedJobs(jobs.filter((job) => {
-        return moment(job.dateCreated, "YYYY/MM/DD").month() == now.getMonth();
-      }));
-    }
-    else if(date == "pastWeek"){
-      setDisplayedJobs(jobs.filter((job) => {
-        return moment(job.dateCreated, "YYYY/MM/DD").week().toLocaleString() == moment().format("W");
-      }));
-    }
-    else{
-      setDisplayedJobs(jobs);
-    }
-  }
 
   const handleJobClick = (job: any) => {
     setSelectedJob(job);
   }
   
   const handleChangePage = (event: any, newPage: any) => {
-    fetchJobs(newPage, rowsPerPage);
+    fetchJobs(newPage, rowsPerPage, language, dateRange);
     setPage(newPage);
   };
 
@@ -120,8 +99,7 @@ const Home = ({
               value={language}
               label="Language"
               onChange={(e) => {
-                handleChange(e, setLanguage)
-                filterJobsByLanguage(e.target.value);
+                handleChangeLanguage(e, setLanguage)
               }}
             >
               {programmingLanguages.map(language => (
@@ -136,11 +114,10 @@ const Home = ({
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
-              value={time}
+              value={dateRange}
               label="Date Posted"
-              onChange={(e) => { 
-                handleChange(e, setTime);
-                filterJobsByDate(e.target.value);
+              onChange={(e) => {
+                handleChangeDate(e, setDateRange);
               }}
             >
               {timeArr.map(element => (
@@ -180,7 +157,7 @@ const Home = ({
                 page={page}
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={null}
+                onRowsPerPageChange={(event) => setRowsPerPage(parseInt(event.target.value, 10))}
               />
             </div>
           </div>
@@ -257,7 +234,7 @@ const mapStateToProps = (state: RootState) => ({
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
-  fetchJobs: (skip?: number, limit?: number) => dispatch(JobActions.fetchJobs(skip, limit)),
+  fetchJobs: (skip?: number, limit?: number, language?: string, dateRange?: string) => dispatch(JobActions.fetchJobs(skip, limit, language, dateRange)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

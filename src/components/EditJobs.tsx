@@ -16,60 +16,72 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import { EMPLOYEE_COUNT } from './CreateJob';
+import { EMPLOYEE_COUNT, JobDetails } from './CreateJob';
 
 interface Props{
   jobs: any[];
   userId: string;
   profile: any;
-  fetchJobs: () => void;
+  // fetchJobs: () => void;
 }
 
 // const EditJobs: React.FC<Props> = (jobs,userId) => {
-const EditJobs: React.FC<Props> = (props) => {
+const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
   const [openEditModal, setOpenEditModal] = useState(false);
-
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-
   const [selectedJob, setSelectedJob] = useState(null);
+  const [ownedJobs, setOwnedJobs] = useState(null);
+
+  const getOwnedJobs = async () => {
+    try {
+      const temp = await JobService.fetchCreatedJobs(profile?._id);
+      setOwnedJobs(temp);
+    }
+    catch(e){
+      console.log(e);
+    }
+  }
 
   useEffect(()=>{
-    if(props?.fetchJobs){
-      props.fetchJobs();
-    }
-  }, [props?.fetchJobs]);
 
-  // call api to get all jobs associated to that user and put in store
-  const ownedJobs = props?.jobs.filter((job: { owner: string; }) => (job.owner == props?.profile?._id));
+    if(profile){
+      getOwnedJobs();
+    }
+
+  }, [profile]);
 
   return (
     <div className="p-10">
-      <BasicTable rowHeaders={["ID", "Company Name", "Title", "Location", "Number of Employees", "Actions"]} rowData={ownedJobs.map((ownedJob) => (
-        <TableRow
-          key={ownedJob._id}
-          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-        >
-          <TableCell component="th" scope="row" align="right">
-            {ownedJob._id}
-          </TableCell>
-          <TableCell align="right">{ownedJob.companyName}</TableCell>
-          <TableCell align="right">{ownedJob.title}</TableCell>
-          <TableCell align="right">{ownedJob.location}</TableCell>
-          <TableCell align="right">{ownedJob.numberOfEmployees}</TableCell>
-          <TableCell align="right">
-            <div className="flex space-x-1 justify-end">
-              <Button onClick={() => {
-                  setSelectedJob(ownedJob);
-                  setOpenEditModal(true);
-                }} variant="outlined">EDIT</Button>
-              <Button onClick={()=>{
-                  setSelectedJob(ownedJob);
-                  setOpenDeleteModal(true);
-                }} variant="outlined" color="error">DELETE</Button>
-            </div>
-          </TableCell>
-        </TableRow>
-      ))}/>
+      {
+        ownedJobs && (
+          <BasicTable rowHeaders={["ID", "Company Name", "Title", "Location", "Number of Employees", "Actions"]} rowData={ownedJobs.data.data.map((ownedJob: JobDetails) => (
+            <TableRow
+              key={ownedJob._id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row" align="right">
+                {ownedJob._id}
+              </TableCell>
+              <TableCell align="right">{ownedJob.companyName}</TableCell>
+              <TableCell align="right">{ownedJob.title}</TableCell>
+              <TableCell align="right">{ownedJob.location}</TableCell>
+              <TableCell align="right">{ownedJob.numberOfEmployees}</TableCell>
+              <TableCell align="right">
+                <div className="flex space-x-1 justify-end">
+                  <Button onClick={() => {
+                      setSelectedJob(ownedJob);
+                      setOpenEditModal(true);
+                    }} variant="outlined">EDIT</Button>
+                  <Button onClick={()=>{
+                      setSelectedJob(ownedJob);
+                      setOpenDeleteModal(true);
+                    }} variant="outlined" color="error">DELETE</Button>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}/>
+        )
+      }
 
       <Modal
         open={openDeleteModal}
@@ -203,10 +215,5 @@ const mapStateToProps = (state: RootState) => ({
   profile: selectProfile(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => {
-  return {
-    fetchJobs: () => dispatch(JobActions.fetchJobs()),    
-  }
-}
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditJobs);
+export default connect(mapStateToProps, null)(EditJobs);
