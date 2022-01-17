@@ -18,11 +18,11 @@ import MenuItem from '@mui/material/MenuItem';
 
 export interface JobDetails {
   _id?: string,
-  companyName: string,
+  companyName?: string,
   title: string,
   responsibilities: string, // text area
   location: string, // text area
-  numberOfEmployees: string,
+  numberOfEmployees?: string,
   languages: string[],
   image: string,
   requirements: string,
@@ -80,15 +80,13 @@ export const CreateJob: React.FC= () => {
   const [isAlertOpen, setIsAlertOpen ] = useState(false);
   const [employeeNumber, setEmployeeNumber] = useState();
 
-  const onSubmit = (values: JobDetails, {setSubmitting}: any) => {
+  const onSubmit = (values: any, {setSubmitting}: any) => {
     JobService.createJob(
       {
-        companyName: values.companyName,
         title: values.title,
         responsibilities: values.responsibilities,
         requirements: values.requirements,
         location: values.location,
-        numberOfEmployees: values.numberOfEmployees,
         languages: values.languages,
         image: values.image,
         dateCreated: new Date()
@@ -147,18 +145,16 @@ export const CreateJob: React.FC= () => {
       <Formik
         validator={null}
         initialValues={{
-          companyName: "",
           title: "",
           responsibilities: "",
           location: "",
-          numberOfEmployees: "",
           languages: [],
           image: "",
           requirements: ""
         }}
         onSubmit={onSubmit}
       >
-        {(props: {handleSubmit: any,handleChange: any, handleBlur: any, setFieldValue: any, values: JobDetails}) => {
+        {(props: {handleSubmit: any,handleChange: any, handleBlur: any, setFieldValue: any, values: any}) => {
           return (
             <form onSubmit={props.handleSubmit}>
               <div className="mx-auto w-1/2 mt-10">
@@ -166,7 +162,6 @@ export const CreateJob: React.FC= () => {
                 <div className="flex justify-center flex-col">
                   <div className="flex flex-row justify-between space-x-2">
                     <div className="flex flex-col">
-                      <JdInput formikName="companyName" onChange={props.handleChange} label="Company: " />
                       <JdInput formikName="title" onChange={props.handleChange} label="Job title:" />
                     </div>
                     <div className="flex flex-col">
@@ -195,7 +190,7 @@ export const CreateJob: React.FC= () => {
                   <JdSelect formikName="languages" optionList={programmingLanguages} handleOnChange={(e: any) => handleOnChange(e,props.setFieldValue,props.values.languages)}/>
                   <span className="space-x-1">
                     {
-                      props.values.languages.map((language, idx) => {
+                      props.values.languages.map((language: any, idx: number) => {
                         return (
                           <Chip key={idx} label={language} size="small" onDelete={() => handleDelete(language, props.setFieldValue, props.values.languages)}/>
                         )
@@ -203,22 +198,6 @@ export const CreateJob: React.FC= () => {
                     }
                   </span>
 
-                  <div className="mt-2">
-                    <FormControl fullWidth variant="standard">
-                      <InputLabel id="demo-simple-select-label">Number of Employees</InputLabel>
-                      <Select
-                        name="numberOfEmployees"
-                        id="numberOfEmployees"
-                        value={props.values.numberOfEmployees}
-                        label="Number of Employees"
-                        onChange={props.handleChange}
-                      >
-                        {EMPLOYEE_COUNT.map(number => (
-                          <MenuItem value={number.value} key={number.name}>{number.value}</MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
-                  </div>
 
                   <div className="mt-2">
                    <JdTextArea formikName="responsibilities" onChange={props.handleChange} label="Responsibilities:"/>

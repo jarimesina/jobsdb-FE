@@ -162,12 +162,12 @@ const Home = ({
             </div>
           </div>
 
-          <div className="w-8/12 bg-white h-screen sticky">
+          <div className="w-8/12 bg-white h-screen sticky overflow-y-auto">
             {
               selectedJob && (
                 <div className="p-5">
                   <div className="text-2xl">{selectedJob.title}</div>
-                  <div className="text-md mt-2">{selectedJob.companyName + " | " + selectedJob.location + " | " + moment(selectedJob.dateCreated).format("DD-MM-YYYY")}</div>
+                  <div className="text-md mt-2">{selectedJob?.owner?.info?.company_name + " | " + selectedJob?.location + " | " + "Posted on " + moment(selectedJob.dateCreated).format("DD-MM-YYYY")}</div>
 
                   <div className="mt-5 mb-2">
                     <div className="mt-2 flex space-x-2">
@@ -183,7 +183,7 @@ const Home = ({
                         <img src={Building} alt="React Logo" width={20}/>
                       </div>
                       <span>
-                        1-10 Employees
+                        {selectedJob?.owner?.info?.numberOfEmployees} Employees
                       </span>
                     </div>
                     <div className="mt-5 flex flex-row space-x-3">
@@ -195,6 +195,20 @@ const Home = ({
                         <Button variant="contained" className="rounded-lg">Save</Button>
                       </div>
                     </div>
+                  </div>
+                  <hr className="mt-5 mb-5"/>
+                  <img src={selectedJob?.owner?.info?.image} width='23%' height="auto"/>
+                  <div>
+                    <div>Company Overview:</div>
+                    <div>{selectedJob?.owner?.info?.about}</div>
+                  </div>
+                  <div>
+                    <div>Industry:</div>
+                    <div>{selectedJob?.owner?.info?.industry}</div>
+                  </div>
+                  <div>
+                    <div>Benefits:</div>
+                    <pre>{selectedJob?.owner?.info?.benefits}</pre>
                   </div>
                   <div>
                     <div>Responsibilities:</div>
@@ -208,14 +222,9 @@ const Home = ({
                       {selectedJob.requirements}
                     </pre>
                   </div>
-
-                  {/* company overview section */}
                   <div>
                     <div>
                       Company Email: {selectedJob && selectedJob.owner?.email}
-                    </div>
-                    <div>
-                      Company Overview: {selectedJob && selectedJob.owner?.info?.about}
                     </div>
                   </div>
                 </div>

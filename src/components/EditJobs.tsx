@@ -193,6 +193,8 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
                     <FormLabel>Responsibilities</FormLabel>
                     <TextareaAutosize 
                       maxRows={4}
+                      name="responsibilities"
+                      id="responsibilities"
                       value={values.responsibilities}
                       className="border border-solid border-gray"
                     />

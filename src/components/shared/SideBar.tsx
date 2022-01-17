@@ -4,13 +4,16 @@ import * as AuthActions from '../../store/auth/duck/actions';
 import { setToken } from '../../api/axios';
 import { Cookies } from "react-cookie";
 import { useHistory } from 'react-router-dom';
+import { RootState } from "MyTypes";
+import { selectProfile } from "../../store/auth/duck/selectors";
 
 interface Props{
   logout: () => void;
   fetchProfile: () => void;
+  profile: any;
 }
 
-const SideBar: React.FC<Props>  = ({children, logout, fetchProfile}) => {
+const SideBar: React.FC<Props>  = ({children, logout, fetchProfile, profile}) => {
 
   const cookies = new Cookies();
   const history = useHistory();
@@ -67,27 +70,33 @@ const SideBar: React.FC<Props>  = ({children, logout, fetchProfile}) => {
         history.push('/register');
       }
     }
-  ]
+  ];
+
   return (
-  <div className="flex flex-row" style={{ minHeight: '100vh'}}>
-    <div className="w-1/6 bg-purple-500 h-screen" style={{ height: 'auto'}}>
-      <ul className="text-white">
-        {
-          items.map((item, index)=> (
-            <li key={index} className="ml-4 mt-4 hover: cursor-pointer" onClick={item.onClick}>{item.routeName}</li>
-          ))
-        }
-      </ul>
+    <div className="flex flex-row" style={{ minHeight: '100vh'}}>
+      <div className="w-1/6 bg-purple-500 h-screen" style={{ height: 'auto'}}>
+        <ul className="text-white">
+          {
+            items.map((item, index)=> (
+              <li key={index} className="ml-4 mt-4 hover: cursor-pointer" onClick={item.onClick}>{item.routeName}</li>
+            ))
+          }
+        </ul>
+      </div>
+      <div className="w-5/6">
+        {profile && children}
+      </div>
     </div>
-    <div className="w-5/6">
-      {children}
-    </div>
-  </div>);
+  );
 };
+
+const mapStateToProps = (state: RootState) => ({
+  profile: selectProfile(state),
+});
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   logout: () => dispatch(AuthActions.logout()),
   fetchProfile: () => dispatch(AuthActions.fetchProfile()),
 });
 
-export default connect(null, mapDispatchToProps)(SideBar);
+export default connect(mapStateToProps, mapDispatchToProps)(SideBar);
