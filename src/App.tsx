@@ -21,7 +21,9 @@ export const App: React.FC = () => {
         <Switch>
           <Route exact path="/myProfile">
             {/* TODO: depending on the role the user should display company profile or  */}
-            <Profile />
+            <SideBar>
+              <Profile />
+            </SideBar>
           </Route>
           <Route exact path="/login">
             <Login />
