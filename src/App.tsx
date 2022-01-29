@@ -11,47 +11,51 @@ import AuthenticatedRoutes from "./components/shared/AuthenticatedRoutes";
 import EditJobs from "./components/EditJobs";
 import './App.css';
 import { Profile } from "./components/Profile";
+import { SnackbarProvider } from "./contexts/SnackbarContext";
 
 export const App: React.FC = () => {
   return (
-    <Provider store={store}>
-      <BrowserRouter>
-        {/* A <Switch> looks through its children <Route>s and
-                renders the first one that matches the current URL. */}
-        <Switch>
-          <Route exact path="/myProfile">
-            {/* TODO: depending on the role the user should display company profile or  */}
-            <SideBar>
-              <Profile />
-            </SideBar>
-          </Route>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route exact path="/createJob">
-            <SideBar>
-              <CreateJob />
-            </SideBar>
-          </Route>
-          <Route exact path="/register">
-            <Register />
-          </Route>
-          <Route exact path="/login">
-            <Login />
-          </Route>
-          <Route exact path="/editJobs">
-            <SideBar>
-              <EditJobs />
-            </SideBar>
-          </Route>
-          <Route exact path="/about">{/* <About /> */}</Route>
-          <AuthenticatedRoutes path="/" >
-            <SideBar>
-              <Home/>
-            </SideBar>
-          </AuthenticatedRoutes>
-        </Switch>
-      </BrowserRouter>
-    </Provider>
+    <SnackbarProvider>
+      <Provider store={store}>
+        <BrowserRouter>
+          {/* A <Switch> looks through its children <Route>s and
+                  renders the first one that matches the current URL. */}
+          <Switch>
+            <Route exact path="/myProfile">
+              {/* TODO: depending on the role the user should display company profile or  */}
+              <SideBar>
+                <Profile />
+              </SideBar>
+            </Route>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/createJob">
+              <SideBar>
+                <CreateJob />
+              </SideBar>
+            </Route>
+            <Route exact path="/register">
+              <Register />
+            </Route>
+            <Route exact path="/login">
+              <Login />
+            </Route>
+            <Route exact path="/editJobs">
+              <SideBar>
+                <EditJobs />
+              </SideBar>
+            </Route>
+            <Route exact path="/about">{/* <About /> */}</Route>
+            <AuthenticatedRoutes path="/" >
+              <SideBar>
+                <Home/>
+              </SideBar>
+            </AuthenticatedRoutes>
+          </Switch>
+        </BrowserRouter>
+      </Provider>
+    </SnackbarProvider>
+
   );
 };

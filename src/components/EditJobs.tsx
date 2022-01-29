@@ -16,7 +16,8 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import { EMPLOYEE_COUNT, JobDetails } from './CreateJob';
+import { JobDetails } from './CreateJob';
+import { useSnackbar } from '../contexts/SnackbarContext';
 
 interface Props{
   jobs: any[];
@@ -31,6 +32,7 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
   const [ownedJobs, setOwnedJobs] = useState(null);
+  const { show } = useSnackbar();
 
   const getOwnedJobs = async () => {
     try {
@@ -49,6 +51,20 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
     }
 
   }, [profile]);
+
+
+  const handleSubmit = async (values: any) => {
+    try{
+      await JobService.editJob({...values, _id: selectedJob._id});
+      show({message: 'Job editted successfully', status: 'success'})
+    }
+    catch(err){
+      show({message: 'Failed to edit a job', status: 'error'})
+    }
+    finally{
+      setOpenEditModal(false);
+    }
+  }
 
   return (
     <div className="p-10">
@@ -96,11 +112,11 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
 
           <Button onClick={async () => {
             try{
-              window.alert("Successfully deleted job.");
               await JobService.deleteJob(selectedJob._id);
+              show({message: 'Successfully deleted job', status: 'success'})
             }
             catch(err){
-              window.alert("Error in deleting job.");
+              show({message: 'Failed to delete job', status: 'error'})
             }
             finally{
               setOpenDeleteModal(false);
@@ -129,18 +145,7 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
               location: selectedJob?.location,
               numberOfEmployees: selectedJob?.numberOfEmployees,
             }}
-            onSubmit={async (values) => {
-              try{
-                await JobService.editJob({...values, _id: selectedJob._id});
-                window.alert("Successfully editted job.");
-              }
-              catch(err){
-                window.alert("Error in editting job.");
-              }
-              finally{
-                setOpenEditModal(false);
-              }
-            }}
+            onSubmit={handleSubmit}
           >
             {({values, handleSubmit, handleChange, handleBlur}: {values: any, handleSubmit: any,handleChange: any, handleBlur: any }) => {
               
@@ -163,30 +168,6 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
                       onBlur={handleBlur}
                       value={values.location}
                     />
-                  </div>
-
-                  <div className="flex flex-col mb-3">
-                    {/* <FormLabel>Number of Employees</FormLabel>
-                    <TextField name="numberOfEmployees" id="numberOfEmployees" variant="outlined" size="small"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.numberOfEmployees}
-                    /> */}
-                    <div className="">
-                      <FormControl fullWidth variant="standard">
-                        <InputLabel id="demo-simple-select-label">Number of Employees</InputLabel>
-                        <Select
-                          name="numberOfEmployees" id="numberOfEmployees"
-                          value={values.numberOfEmployees}
-                          label="Number of Employees"
-                          onChange={handleChange}
-                        >
-                          {EMPLOYEE_COUNT.map(number => (
-                            <MenuItem value={number.value} key={number.name}>{number.value}</MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
-                    </div>
                   </div>
 
                   <div className="flex flex-col mb-3">

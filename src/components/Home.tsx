@@ -29,8 +29,8 @@ const Home = ({
   const [dateRange, setDateRange] = useState('');
   const [displayedJobs, setDisplayedJobs] = useState([]);
   const [selectedJob, setSelectedJob] = useState(null);
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     if(jobs){
