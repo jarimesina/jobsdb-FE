@@ -87,6 +87,11 @@ const Home = ({
     setPage(newPage);
   };
 
+  const calculateTimeAgo = (date: string) => {
+    const now = moment();
+    return now.diff(date, "days");
+  }
+
   return (
     <>
       <div className="flex flex-row space-x-2 p-2">
@@ -137,16 +142,18 @@ const Home = ({
               {
                 displayedJobs.map((job: JobDetails,idx: any)=>{
                   return (
-                  <div key={idx} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
-                    <div className="w-3/12 flex justify-center">
-                      <img className="rounded-full h-14 w-14" src={job.image || "https://picsum.photos/200/300"}/>
+                    <div key={idx} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
+                      <div className="w-3/12 flex justify-center">
+                        <img className="rounded-full h-14 w-14" src={job.image || "https://picsum.photos/200/300"}/>
+                      </div>
+                      <div className="flex flex-col w-9/12 border-b-2 border-gray-200 pb-2">
+                        <span className="text-blue-400 group-hover:underline">{job.title || 'n/a'}</span>
+                        <span>{job.companyName || 'n/a'}</span>
+                        <span>{job.location || 'n/a'}</span>
+                        <span>Posted {calculateTimeAgo(job.dateCreated)} days ago</span>
+                      </div>
                     </div>
-                    <div className="w-9/12 border-b-2 border-gray-200 pb-2">
-                      <h1 className="text-blue-400 group-hover:underline">{job.title || 'n/a'}</h1>
-                      <h2>{job.companyName || 'n/a'}</h2>
-                      <h2>{job.location || 'n/a'}</h2>
-                    </div>
-                  </div>)
+                  );
                 })
               }
             </div>
