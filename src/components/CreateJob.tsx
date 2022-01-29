@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import { JdInput } from "./shared/JdInput";
 import { JdSelect } from "./shared/JdSelect";
 import { JdTextArea } from "./shared/JdTextArea";
@@ -11,10 +11,7 @@ import IconButton from '@mui/material/IconButton';
 import Cookies from "react-cookie/cjs/Cookies";
 import CloseIcon from "../../src/images/closeIcon.svg";
 import * as JobService from "../api/JobService";
-import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
+import { useSnackbar } from "../contexts/SnackbarContext";
 
 export interface JobDetails {
   _id?: string,
@@ -79,6 +76,7 @@ export const CreateJob: React.FC= () => {
   const cookies = new Cookies();
   const [isAlertOpen, setIsAlertOpen ] = useState(false);
   const [employeeNumber, setEmployeeNumber] = useState();
+  const { show } = useSnackbar();
 
   const onSubmit = (values: any, {setSubmitting}: any) => {
     JobService.createJob(
@@ -93,13 +91,15 @@ export const CreateJob: React.FC= () => {
       }
     )
     .then((response) => {
-      if(response.status== 200){
+      if(response.status == 200){
         setIsAlertOpen(true);
         setInterval(() => {setIsAlertOpen(false);}, 1000);
       }
+      show({message: 'Job created successfully', status: 'success'})
     })
     .catch((err: any) => {
       console.log(err);
+      show({message: 'Failed to create a job', status: 'error'})
     })
     .finally(() => {
       setSubmitting(false);
