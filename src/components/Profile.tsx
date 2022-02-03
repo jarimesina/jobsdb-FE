@@ -1,11 +1,30 @@
+import { RootState } from "MyTypes";
 import React from "react";
+import { connect } from "react-redux";
+import { selectProfile } from "../store/auth/duck/selectors";
 import CompanyProfile from "./CompanyProfile";
+import { UserProfile } from "./UserProfile";
 
-// this component checks if the user role is 1 or 2 then it renders the right component for it
-export const Profile: React.FC = () => {
+interface Props{
+  profile: any;
+}
 
-  // TODO: check user role to see which profile to display: company/normal user
+// this component checks if the user role is 1 or 2 then it renders the right component
+const Profile: React.FC<Props> = ({profile}) => {
+
+  if(profile?.role === 1){
+    return (
+      <UserProfile />
+    );
+  }
+
   return (
     <CompanyProfile />
   );
-}
+};
+
+const mapStateToProps = (state: RootState) => ({
+  profile: selectProfile(state),
+});
+
+export default connect(mapStateToProps, null)(Profile);

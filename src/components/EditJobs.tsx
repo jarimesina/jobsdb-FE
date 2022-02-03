@@ -23,9 +23,9 @@ interface Props{
   jobs: any[];
   userId: string;
   profile: any;
-  // fetchJobs: () => void;
 }
 
+// TODO: add the other fields that need to be editted
 // const EditJobs: React.FC<Props> = (jobs,userId) => {
 const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
   const [openEditModal, setOpenEditModal] = useState(false);

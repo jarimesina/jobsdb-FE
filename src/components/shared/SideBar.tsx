@@ -6,6 +6,7 @@ import { Cookies } from "react-cookie";
 import { useHistory } from 'react-router-dom';
 import { RootState } from "MyTypes";
 import { selectProfile } from "../../store/auth/duck/selectors";
+import { useMemo } from "react";
 
 interface Props{
   logout: () => void;
@@ -26,58 +27,105 @@ const SideBar: React.FC<Props>  = ({children, logout, fetchProfile, profile}) =>
     }
   }, [localStorage.getItem("AUTH_KEY"), fetchProfile]);
 
-  const items = [
-    {
-      routeName: 'My Profile',
-      onClick: () => {
-        history.push('/myProfile');
-      }
-    },
-    {
-      routeName: 'My Saved Jobs',
-
-    },
-    {
-      routeName: 'Applied Jobs',
-
-    },
-    {
-      routeName: 'Find Jobs',
-      onClick: () => {
-        history.push('/');
-      }
-    },
-    {
-      routeName: 'Create Jobs',
-      onClick: () => {
-        history.push('/createJob');
-      }
-    },
-    {
-      routeName: 'Edit My Jobs',
-      onClick: () => {
-        history.push('/editJobs');
-      }
-    },
-    {
-      routeName: 'Log Out',
-      onClick: () => {
-        logout();
-        cookies.remove('AUTH_KEY', {path: '/'});
-        localStorage.removeItem('AUTH_KEY');
-        setToken('');
-        // window.location.reload();
-        history.push('/register');
-      }
+  const sideBarItems = useMemo(()=>{
+    if(profile?.role === 1){
+      return [
+        {
+          routeName: 'My Profile',
+          onClick: () => {
+            history.push('/myProfile');
+          }
+        },
+        {
+          routeName: 'My Saved Jobs',
+          onClick: () => {
+            history.push('/mySavedJobs');
+          }
+        },
+        {
+          routeName: 'Applied Jobs',
+    
+        },
+        {
+          routeName: 'Find Jobs',
+          onClick: () => {
+            history.push('/');
+          }
+        },
+        {
+          routeName: 'Create Jobs',
+          onClick: () => {
+            history.push('/createJob');
+          }
+        },
+        {
+          routeName: 'Edit My Jobs',
+          onClick: () => {
+            history.push('/editJobs');
+          }
+        },
+        {
+          routeName: 'Log Out',
+          onClick: () => {
+            logout();
+            cookies.remove('AUTH_KEY', {path: '/'});
+            localStorage.removeItem('AUTH_KEY');
+            setToken('');
+            // window.location.reload();
+            history.push('/login');
+          }
+        }
+      ];
     }
-  ];
+    return [
+      {
+        routeName: 'My Profile',
+        onClick: () => {
+          history.push('/myProfile');
+        }
+      },
+      {
+        routeName: 'Applied Jobs',
+  
+      },
+      {
+        routeName: 'Find Jobs',
+        onClick: () => {
+          history.push('/');
+        }
+      },
+      {
+        routeName: 'Create Jobs',
+        onClick: () => {
+          history.push('/createJob');
+        }
+      },
+      {
+        routeName: 'Edit My Jobs',
+        onClick: () => {
+          history.push('/editJobs');
+        }
+      },
+      {
+        routeName: 'Log Out',
+        onClick: () => {
+          logout();
+          cookies.remove('AUTH_KEY', {path: '/'});
+          localStorage.removeItem('AUTH_KEY');
+          setToken('');
+          // window.location.reload();
+          history.push('/login');
+        }
+      }
+    ];
+  }, [profile?.role]);
 
   return (
     <div className="flex flex-row" style={{ minHeight: '100vh'}}>
       <div className="w-1/6 bg-purple-500 h-screen" style={{ height: 'auto'}}>
         <ul className="text-white">
           {
-            items.map((item, index)=> (
+            sideBarItems.map((item, index)=> (
               <li key={index} className="ml-4 mt-4 hover: cursor-pointer" onClick={item.onClick}>{item.routeName}</li>
             ))
           }
