@@ -82,7 +82,10 @@ const Login = ({
               </form>
             </div>
             <div>
-              Need an account? <span className="text-sm text-blue-500 mt-2"><Link to="/register">Sign Up</Link></span>
+              <span>
+              Need an account? 
+              </span>
+              <span className="text-blue-500 mt-2"><Link to="/register">Sign Up</Link></span>
             </div>
           </div>
         );

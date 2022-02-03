@@ -13,17 +13,22 @@ import moment from 'moment';
 import Briefcase from '../images/briefcase.svg';
 import Building from '../images/building.svg';
 import TablePagination from '@mui/material/TablePagination';
+import { selectProfile } from "../store/auth/duck/selectors";
+import * as AuthService from "../api/AuthService";
+import { useSnackbar } from "../contexts/SnackbarContext";
 
 interface Props {
   jobs: JobDetails[];
   total: number;
   fetchJobs: (skip?: number, limit?: number, language?: string, dateRange?: string) => void;
+  profile: any;
 }
 
 const Home = ({
   jobs,
   total,
   fetchJobs,
+  profile,
 }: Props) => {
   const [language, setLanguage] = useState('');
   const [dateRange, setDateRange] = useState('');
@@ -31,6 +36,7 @@ const Home = ({
   const [selectedJob, setSelectedJob] = useState(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { show } = useSnackbar();
 
   useEffect(() => {
     if(jobs){
@@ -193,15 +199,27 @@ const Home = ({
                         {selectedJob?.owner?.info?.numberOfEmployees} Employees
                       </span>
                     </div>
-                    <div className="mt-5 flex flex-row space-x-3">
-                      <div>
-                        <Button variant="outlined" className="rounded-lg">Apply</Button>
-                      </div>
+                    { profile.role == 1 && (
+                      <div className="mt-5 flex flex-row space-x-3">
+                        <div>
+                          <Button variant="outlined" className="rounded-lg">Apply</Button>
+                        </div>
+                        <div>
+                          <Button variant="contained" className="rounded-lg" onClick={async ()=>{
+                            try{
+                              const res = await AuthService.saveJob(selectedJob._id, profile._id);
 
-                      <div>
-                        <Button variant="contained" className="rounded-lg">Save</Button>
+                              if(res.status === 200){
+                                show({message: 'Job added!', status: 'success'})
+                              }
+                            }
+                            catch(err){
+                              show({message: 'Failed to add job', status: 'error'})
+                            }
+                          }}>Save</Button>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
                   <hr className="mt-5 mb-5"/>
                   <img src={selectedJob?.owner?.info?.image} width='23%' height="auto"/>
@@ -247,6 +265,7 @@ const Home = ({
 const mapStateToProps = (state: RootState) => ({
   jobs: selectJobsList(state),
   total: selectTotalJobs(state),
+  profile: selectProfile(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({

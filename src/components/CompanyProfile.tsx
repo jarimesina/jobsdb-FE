@@ -6,11 +6,14 @@ import { connect } from "react-redux";
 import { selectProfile } from "../store/auth/duck/selectors";
 import * as AuthService from '../api/AuthService';
 import { EMPLOYEE_COUNT } from "./CreateJob";
+import { useSnackbar } from "../contexts/SnackbarContext";
+
 interface Props {
   profile: any;
 }
 
 const CompanyProfile = ({ profile }: Props) => {
+  const { show } = useSnackbar();
 
   const onSubmit = (values: any, {setSubmitting}: any) => {
     AuthService.updateCompanyInfo(
@@ -23,22 +26,21 @@ const CompanyProfile = ({ profile }: Props) => {
       values.numberOfEmployees,
     )
     .then((response) => {
-      if(response.status== 200){
-        console.log(response.data);
-        // TODO: when snackbar provider is created then add it here
-        // setIsAlertOpen(true);
-        // setInterval(() => {setIsAlertOpen(false);}, 1000);
+      if(response.status === 200){
+        show({message: 'Profile updated!', status: 'success'})
+      }
+      else{
+        show({message: 'Failed to update profile', status: 'error'})
       }
     })
     .catch((err: any) => {
-      // TODO: when snackbar provider is created then add it here
+      show({message: 'Failed to update profile', status: 'error'})
       console.log(err);
     })
     .finally(() => {
       setSubmitting(false);
     });
   };
-
 
   return (
     <div className="p-10">

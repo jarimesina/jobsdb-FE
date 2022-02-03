@@ -6,34 +6,35 @@ import * as AuthService from '../api/AuthService';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
+import * as Yup from 'yup';
 
 export const Register: React.FC = () => {
-
   const history = useHistory();
 
-  const onSubmit = (values: { firstName: string; lastName: string; email: string; password: string; }, { setSubmitting }: any) => {
-    AuthService.signup(
-      values.firstName,
-      values.lastName,
-      values.email,
-      values.password,
-    ).then((response: any) => {
-        if (response.data.redirect === "/") {
-          window.location.href = "/";
-        } else if (response.data.redirect === "/login") {
-          window.location.href = "/login";
-        }
-      })
-    .catch((error) => {
-      console.log(error);
-    });
-    history.push('/');
+  const onSubmit = async (values: { firstName: string; lastName: string; email: string; password: string; isEmployer: boolean; }, { setSubmitting }: any) => {
+    const isEmployer = values.isEmployer ? 2 : 1;
+    try{
+      const response = await AuthService.signup(values.firstName, values.lastName, values.email, values.password, isEmployer);
+      if (response?.status === 201) {
+        window.location.href = "/";
+      } else {
+        window.location.href = "/register";
+      }
+    } catch(err){
+      console.log(err);
+    }
     setSubmitting(false);
   };
 
   return (
     <Formik
-      validator={null}
+      validator={Yup.object().shape({
+        firstName: Yup.string().required('Required'),
+        lastName: Yup.string().required('Required'),
+        password: Yup.string().required('Required'),
+        email: Yup.string().email('Invalid email').required('Required'),
+        isEmployer: Yup.boolean(),
+      })}
       initialValues={{
         firstName: "",
         lastName: "",
@@ -42,6 +43,7 @@ export const Register: React.FC = () => {
         isEmployer: false,
       }}
       // TODO: add confirm password feature
+      // TODO: add yup validation
       onSubmit={onSubmit}
     >
       {(props: {handleSubmit: any,handleChange: any, handleBlur: any }) => {
@@ -79,9 +81,9 @@ export const Register: React.FC = () => {
                   />
                 </div>
 
-                <div>
+                <div className="px-3">
                   <FormGroup>
-                    <FormControlLabel control={<Checkbox defaultChecked name="isEmployer" id="isEmployer" onChange={props.handleChange}/>} label="Register as Employer" />
+                    <FormControlLabel control={<Checkbox name="isEmployer" id="isEmployer" onChange={props.handleChange}/>} label="Register as Employer" />
                   </FormGroup>
                 </div>
 
