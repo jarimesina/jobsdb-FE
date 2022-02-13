@@ -43,7 +43,7 @@ export const Register: React.FC = () => {
         isEmployer: false,
       }}
       // TODO: add confirm password feature
-      // TODO: add yup validation
+      // TODO: add yup validation for all forms
       onSubmit={onSubmit}
     >
       {(props: {handleSubmit: any,handleChange: any, handleBlur: any }) => {

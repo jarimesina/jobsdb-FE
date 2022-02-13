@@ -33,7 +33,7 @@ const SavedJobs: React.FC<Props> = ({profile}) => {
           <TableCell align="right">
             <div className="flex space-x-1 justify-end">
               <Button onClick={()=>{
-                  // TODO: add remove job
+                  // TODO: add remove saved job
                 }} variant="outlined" color="error">REMOVE</Button>
             </div>
           </TableCell>

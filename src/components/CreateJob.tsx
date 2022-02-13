@@ -1,17 +1,11 @@
 import { Formik } from "formik";
-import React, { useState } from "react";
-import { JdInput } from "./shared/JdInput";
+import React from "react";
 import { JdSelect } from "./shared/JdSelect";
-import { JdTextArea } from "./shared/JdTextArea";
-import { Chip } from '@material-ui/core';
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
+import { Chip, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import Cookies from "react-cookie/cjs/Cookies";
-import CloseIcon from "../../src/images/closeIcon.svg";
 import * as JobService from "../api/JobService";
 import { useSnackbar } from "../contexts/SnackbarContext";
+import { Button, TextField } from "@material-ui/core";
 
 export interface JobDetails {
   _id?: string,
@@ -26,10 +20,11 @@ export interface JobDetails {
   dateCreated?: string,
 }
 
-export const programmingLanguages = [
+export const PROGRAMMINGLANGUAGES = [
   {
     value: 'Select a language',
-    name: 'Select a language'
+    name: 'Select a language',
+    isDisabled: true,
   },
   {
     value: 'React',
@@ -74,11 +69,9 @@ export const EMPLOYEE_COUNT = [
 
 export const CreateJob: React.FC= () => {
   const cookies = new Cookies();
-  const [isAlertOpen, setIsAlertOpen ] = useState(false);
-  const [employeeNumber, setEmployeeNumber] = useState();
   const { show } = useSnackbar();
 
-  const onSubmit = (values: any, {setSubmitting}: any) => {
+  const onSubmit = (values: any, {setSubmitting, resetForm}: any) => {
     JobService.createJob(
       {
         title: values.title,
@@ -92,10 +85,9 @@ export const CreateJob: React.FC= () => {
     )
     .then((response) => {
       if(response.status == 200){
-        setIsAlertOpen(true);
-        setInterval(() => {setIsAlertOpen(false);}, 1000);
+        show({message: 'Job created successfully', status: 'success'})
+        resetForm();
       }
-      show({message: 'Job created successfully', status: 'success'})
     })
     .catch((err: any) => {
       console.log(err);
@@ -118,30 +110,6 @@ export const CreateJob: React.FC= () => {
 
   return (
     <div>
-      {
-        isAlertOpen && (
-          // change this into a snackbar type on the lower left of the screen
-          <Collapse in={isAlertOpen}>
-            <Alert severity="success"
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setIsAlertOpen(false);
-                  }}
-                >
-                  <img src={CloseIcon} alt="React Logo" width={20}/>
-                </IconButton>
-              }
-            >
-              <AlertTitle>Success</AlertTitle>
-              Job successfully created!
-            </Alert>
-          </Collapse>
-        )
-      }
       <Formik
         validator={null}
         initialValues={{
@@ -154,15 +122,23 @@ export const CreateJob: React.FC= () => {
         }}
         onSubmit={onSubmit}
       >
-        {(props: {handleSubmit: any,handleChange: any, handleBlur: any, setFieldValue: any, values: any}) => {
+        {({handleSubmit, handleChange, handleBlur, setFieldValue, values}) => {
           return (
-            <form onSubmit={props.handleSubmit}>
+            <form onSubmit={handleSubmit}>
               <div className="mx-auto w-1/2 mt-10">
                 <span className="text-lg font-bold">Create a new job</span>
                 <div className="flex justify-center flex-col">
                   <div className="flex flex-row justify-between space-x-2">
-                    <div className="flex flex-col">
-                      <JdInput formikName="title" onChange={props.handleChange} label="Job title:" />
+                    <div className="flex flex-col justify-end">
+                      <TextField
+                        variant="outlined"
+                        name="title" 
+                        id="title" 
+                        label="Title"
+                        size="small"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
                     </div>
                     <div className="flex flex-col">
                       <label>Image:</label>
@@ -174,45 +150,84 @@ export const CreateJob: React.FC= () => {
                             const fileReader = new FileReader();
                             fileReader.onload = () => {
                               if (fileReader.readyState === 2) {
-                                props.setFieldValue('image', fileReader.result);
+                                setFieldValue('image', fileReader.result);
                               }
                             };
                             fileReader.readAsDataURL(e.target.files[0]);
                           }
                         }}
-                        onBlur={props.handleBlur}
+                        onBlur={handleBlur}
                         accept="image/*"
                       />
                     </div>
                   </div>
 
                   <label>Languages:</label>
-                  <JdSelect formikName="languages" optionList={programmingLanguages} handleOnChange={(e: any) => handleOnChange(e,props.setFieldValue,props.values.languages)}/>
+                  <JdSelect formikName="languages" optionList={PROGRAMMINGLANGUAGES} handleOnChange={(e: any) => handleOnChange(e, setFieldValue, values.languages)}/>
                   <span className="space-x-1">
                     {
-                      props.values.languages.map((language: any, idx: number) => {
+                      values.languages.map((language: any, idx: number) => {
                         return (
-                          <Chip key={idx} label={language} size="small" onDelete={() => handleDelete(language, props.setFieldValue, props.values.languages)}/>
+                          <Chip key={idx} label={language} size="small" onDelete={() => handleDelete(language, setFieldValue, values.languages)}/>
                         )
                       })
                     }
                   </span>
 
+                  <FormControl fullWidth margin="dense">
+                    <TextField
+                      id="responsibilities"
+                      name="responsibilities"
+                      label="Responsibilities"
+                      multiline
+                      variant="outlined"
+                      maxRows={8}
+                      value={values.responsibilities}
+                      onChange={handleChange}
+                      inputProps={{
+                        style: {
+                          height: 40,
+                        },
+                      }}
+                    />
+                  </FormControl>
 
-                  <div className="mt-2">
-                   <JdTextArea formikName="responsibilities" onChange={props.handleChange} label="Responsibilities:"/>
-                  </div>
+                  <FormControl fullWidth margin="dense">
+                    <TextField
+                      id="location"
+                      name="location"
+                      label="Location"
+                      multiline
+                      variant="outlined"
+                      maxRows={4}
+                      value={values.location}
+                      onChange={handleChange}
+                      inputProps={{
+                        style: {
+                          height: 40,
+                        },
+                      }}
+                    />
+                  </FormControl>
 
-                  <div className="mt-2">
-                    <JdTextArea formikName="location" onChange={props.handleChange} label="Location:" />
-                  </div>
-
-                  <div className="mt-2">
-                   <JdTextArea formikName="requirements" onChange={props.handleChange} label="Requirements:"/>
-                  </div>
-
+                  <FormControl fullWidth margin="dense">
+                    <TextField
+                      id="requirements"
+                      name="requirements"
+                      label="Requirements"
+                      multiline
+                      variant="outlined"
+                      maxRows={8}
+                      value={values.requirements}
+                      onChange={handleChange}
+                      inputProps={{
+                        style: {
+                          height: 40,
+                        },
+                      }}
+                    />
+                  </FormControl>
                 </div>
-
                 <button type="submit" className="my-2 bg-purple-500 px-5 py-2 rounded-md text-white">Submit</button>
               </div>
             </form>

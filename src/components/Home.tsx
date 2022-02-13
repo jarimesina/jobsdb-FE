@@ -3,7 +3,7 @@ import React, { Dispatch, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import * as JobActions from '../store/jobs/duck/actions';
 import { selectJobsList, selectTotalJobs } from "../store/jobs/duck/selectors";
-import { JobDetails, programmingLanguages } from "./CreateJob";
+import { JobDetails, PROGRAMMINGLANGUAGES } from "./CreateJob";
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -24,6 +24,8 @@ interface Props {
   profile: any;
 }
 
+// TODO: add feature to hide save button if user has already saved the job
+// TODO: add feature to prevent user from going back after logging out
 const Home = ({
   jobs,
   total,
@@ -47,12 +49,16 @@ const Home = ({
 
   const handleChangeLanguage = (event: any, cb: { (value: React.SetStateAction<string>): void; (arg0: any): void; }) => {
     cb(event.target.value);
-    fetchJobs(page, rowsPerPage, event.target.value, dateRange);
+    setPage(0);
+    setRowsPerPage(10);
+    fetchJobs(page*rowsPerPage, rowsPerPage, event.target.value, dateRange);
   };
 
   const handleChangeDate = (event: any, cb: { (value: React.SetStateAction<string>): void; (arg0: any): void; }) => {
     cb(event.target.value);
-    fetchJobs(page, rowsPerPage, language, event.target.value);
+    setPage(0);
+    setRowsPerPage(10);
+    fetchJobs(page*rowsPerPage, rowsPerPage, language, event.target.value);
   };
 
   const timeArr = [
@@ -89,7 +95,7 @@ const Home = ({
   }
   
   const handleChangePage = (event: any, newPage: any) => {
-    fetchJobs(newPage, rowsPerPage, language, dateRange);
+    fetchJobs(newPage*rowsPerPage, rowsPerPage, language, dateRange);
     setPage(newPage);
   };
 
@@ -113,8 +119,8 @@ const Home = ({
                 handleChangeLanguage(e, setLanguage)
               }}
             >
-              {programmingLanguages.map(language => (
-                <MenuItem value={language.value} key={language.name}>{language.value}</MenuItem>
+              {PROGRAMMINGLANGUAGES.map(language => (
+                <MenuItem disabled={language?.isDisabled} value={language.value} key={language.name}>{language.value}</MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -137,7 +143,7 @@ const Home = ({
             </Select>
           </FormControl>
         </div>
-        <div className="justify-center items-center flex">
+        <div className="justify-center items-end flex">
           <Button variant="contained" onClick={handleReset}>Reset</Button>
         </div>
       </div>
