@@ -112,8 +112,11 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
 
           <Button onClick={async () => {
             try{
-              await JobService.deleteJob(selectedJob._id);
-              show({message: 'Successfully deleted job', status: 'success'})
+              const res = await JobService.deleteJob(selectedJob._id);
+
+              if(res.status === 200){
+                show({message: 'Successfully deleted job', status: 'success'})
+              }
             }
             catch(err){
               show({message: 'Failed to delete job', status: 'error'})

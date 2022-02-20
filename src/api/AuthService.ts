@@ -31,3 +31,10 @@ export const updateCompanyInfo = ( id: string, company_name: string, about: stri
 export const saveJob = ( jobId: string, userId: string) => axios.post(`http://localhost:4001/saveJob?jobId=${jobId}&userId=${userId}`);
 
 export const fetchProfile = () => axios.get('http://localhost:4001/user/me');
+
+export const updateNormalUser = (id: string, firstName: string, lastName: string, image:string) => axios.post('http://localhost:4001/normalUser', {
+  id,
+  first_name: firstName,
+  last_name: lastName,
+  image
+});

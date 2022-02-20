@@ -14,7 +14,7 @@ const Profile: React.FC<Props> = ({profile}) => {
 
   if(profile?.role === 1){
     return (
-      <UserProfile />
+      <UserProfile profile={profile}/>
     );
   }
 
