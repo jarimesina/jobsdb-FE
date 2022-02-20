@@ -85,10 +85,6 @@ const SideBar: React.FC<Props>  = ({children, logout, fetchProfile, profile}) =>
         }
       },
       {
-        routeName: 'Applied Jobs',
-  
-      },
-      {
         routeName: 'Find Jobs',
         onClick: () => {
           history.push('/');
@@ -123,6 +119,15 @@ const SideBar: React.FC<Props>  = ({children, logout, fetchProfile, profile}) =>
   return (
     <div className="flex flex-row" style={{ minHeight: '100vh'}}>
       <div className="w-1/6 bg-purple-500 h-screen" style={{ height: 'auto'}}>
+        {profile?.first_name && profile?.last_name ? (
+          <div className="ml-4 mb-10 text-white">
+            Hello {profile?.first_name} {profile?.last_name}!
+          </div>
+        ) : (
+          <div className="ml-4 mb-10 mt-10 text-white">
+            Hello user!
+          </div>
+        )}
         <ul className="text-white">
           {
             sideBarItems.map((item, index)=> (

@@ -1,5 +1,4 @@
 import { Button, TextField } from "@material-ui/core";
-import axios from "axios";
 import { connect } from 'react-redux';
 import { Formik } from "formik";
 import React, { Dispatch, useEffect } from "react";
@@ -83,9 +82,13 @@ const Login = ({
             </div>
             <div>
               <span>
-              Need an account? 
+                Need an account?
               </span>
-              <span className="text-blue-500 mt-2"><Link to="/register">Sign Up</Link></span>
+              <span className="text-blue-500 mt-2">
+                <Link to="/register">
+                  {" Sign Up"}
+                </Link>
+              </span>
             </div>
           </div>
         );
