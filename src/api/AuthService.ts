@@ -38,3 +38,5 @@ export const updateNormalUser = (id: string, firstName: string, lastName: string
   last_name: lastName,
   image
 });
+
+export const removeSavedJob = (jobId: string, userId: string) => axios.post(`http://localhost:4001/removeSavedJob?jobId=${jobId}&userId=${userId}`);
