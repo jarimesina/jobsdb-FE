@@ -1,7 +1,8 @@
 import { Button, TextField } from "@material-ui/core";
 import { connect } from 'react-redux';
 import { Formik } from "formik";
-import React, { Dispatch, useEffect } from "react";
+import React, { useEffect } from "react";
+import {Dispatch} from 'redux';
 import * as AuthActions from '../store/auth/duck/actions';
 import { RootState } from "MyTypes";
 import { selectUserId } from "../store/auth/duck/selectors";
@@ -101,7 +102,7 @@ const mapStateToProps = (state: RootState, props?: any) => ({
   userId: selectUserId(state),
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   login: (email: string, password: string) => dispatch(AuthActions.login(email, password)),
 });
 

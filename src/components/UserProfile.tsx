@@ -1,16 +1,22 @@
 import { Formik } from "formik";
 import React, { useEffect, useState } from "react";
+import { Dispatch } from 'redux';
 import { FormControl, FormLabel, InputLabel, TextField } from "@material-ui/core";
 import { useSnackbar } from "../contexts/SnackbarContext";
 import { Button } from "@material-ui/core";
 import Edit from '@material-ui/icons/Edit';
-import * as AuthService from '../api/AuthService';
+import { connect } from "react-redux";
+import * as AuthActions from '../store/auth/duck/actions';
 
-interface Props {
-  profile?: any;
+interface IFooProps {
+  profile: any;
 }
 
-export const UserProfile = ({ profile } : Props) => {
+interface IFooInjectedProps extends IFooProps {
+  updateNormalUser: (id: string, firstName: string, lastName: string, image: string) => void;
+}
+
+export const UserProfile = ({ profile, updateNormalUser } : IFooInjectedProps) => {
   const { show } = useSnackbar();
   const [isEdit, setIsEdit] = useState(false);
 
@@ -23,11 +29,11 @@ export const UserProfile = ({ profile } : Props) => {
     try{
       setSubmitting(false);
       console.log("profile._id", profile);
-      const res = await AuthService.updateNormalUser(profile._id, values.firstName, values.lastName, values.image);
-
-      if(res.status === 200){
-        show({message: 'Profile Updated!', status: 'success'});
-      }
+      // const res = await AuthService.updateNormalUser(profile._id, values.firstName, values.lastName, values.image);
+      updateNormalUser(profile._id, values.firstName, values.lastName, values.image);
+      // if(res?.status === 200){
+      //   show({message: 'Profile Updated!', status: 'success'});
+      // }
 
     } catch(err){
       show({message: 'Profile failed to update', status: 'error'});
@@ -145,4 +151,8 @@ export const UserProfile = ({ profile } : Props) => {
   );
 }
 
-export default UserProfile;
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  updateNormalUser: (id: string, firstName: string, lastName: string, image: string) => dispatch(AuthActions.updateNormalUser(id, firstName, lastName, image)),
+});
+
+export default connect(null, mapDispatchToProps)(UserProfile);

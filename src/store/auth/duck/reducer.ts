@@ -38,6 +38,47 @@ export default function reducer(state: State = initialState, action: AuthActions
         ...state,
         profile: action.payload.data
       };
+    case AuthActions.UPDATE_NORMAL_USER:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          info: {}
+        },
+      };
+    case AuthActions.UPDATE_NORMAL_USER_SUCCESS:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          info: {
+            ...state.profile.info,
+            ...action.payload.data,
+          }
+        }
+      };
+    case AuthActions.REMOVE_SAVED_JOB:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          info: {
+            ...state.profile.info,
+            saved_jobs: []
+          }
+        },
+      };
+    case AuthActions.REMOVE_SAVED_JOB_SUCCESS:
+      return {
+        ...state,
+        profile: {
+          ...state.profile,
+          info: {
+            ...state.profile.info,
+            saved_jobs: action.payload.data
+          }
+        },
+      };
     case AuthActions.LOGOUT: 
       return initialState;
     default:
