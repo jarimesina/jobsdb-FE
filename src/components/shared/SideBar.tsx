@@ -131,12 +131,16 @@ const SideBar: React.FC<Props>  = ({children, logout, fetchProfile, profile}) =>
         <ul className="text-white">
           {
             sideBarItems.map((item, index)=> (
-              <li key={index} className="ml-4 mt-4 hover: cursor-pointer" onClick={item.onClick}>{item.routeName}</li>
+              <div key={`${item.routeName}-${index}`}>
+                {/* TODO: add icons here and add some highlight on selected icons */}
+                {/* TODO: implement smooth scrolling */}
+                <li className="ml-4 mt-4 hover: cursor-pointer" onClick={item.onClick}>{item.routeName}</li>
+              </div>
             ))
           }
         </ul>
       </div>
-      <div className="w-5/6">
+      <div className="w-5/6 bg-gray-300">
         {profile && children}
       </div>
     </div>

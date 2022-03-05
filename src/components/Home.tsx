@@ -106,7 +106,7 @@ const Home = ({
 
   return (
     <>
-      <div className="flex flex-row space-x-2 p-2">
+      <div className="flex flex-row space-x-2 p-2 bg-white ">
         <div style={{minWidth: 300}}>
           <FormControl fullWidth variant="standard">
             <InputLabel id="demo-simple-select-label">Programming Language</InputLabel>

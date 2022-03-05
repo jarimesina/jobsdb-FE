@@ -125,7 +125,7 @@ export const CreateJob: React.FC= () => {
         {({handleSubmit, handleChange, handleBlur, setFieldValue, values}) => {
           return (
             <form onSubmit={handleSubmit}>
-              <div className="mx-auto w-1/2 mt-10">
+              <div className="mx-auto bg-white p-10 rounded-lg w-1/2 mt-10">
                 <span className="text-lg font-bold">Create a new job</span>
                 <div className="flex justify-center flex-col">
                   <div className="flex flex-row justify-between space-x-2">
