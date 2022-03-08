@@ -50,7 +50,8 @@ export function* handleUpdateNormalUser(action: ActionType<typeof AuthService.up
     const { payload: {id, firstName, lastName, image} } = action;
     const response: AxiosResponse = yield call(AuthService.updateNormalUser, id, firstName, lastName, image);
     const { data } = response;
-    yield put(AuthActions.updateNormalUserSuccess(data.data.saved_jobs));
+    console.log('data', data);
+    yield put(AuthActions.updateNormalUserSuccess(data.data));
   } catch (error) {
     const cookies = new Cookies();
     cookies.remove('AUTH_KEY', { path: '/'});

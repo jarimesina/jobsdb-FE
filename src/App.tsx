@@ -13,6 +13,7 @@ import './App.css';
 import Profile from "./components/Profile";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
 import SavedJobs from "./components/SavedJobs";
+import NewNavigation from "./components/shared/NewNavigation";
 
 export const App: React.FC = () => {
   return (
@@ -22,24 +23,36 @@ export const App: React.FC = () => {
           {/* A <Switch> looks through its children <Route>s and
                   renders the first one that matches the current URL. */}
           <Switch>
-            <Route exact path="/myProfile">
-              {/* TODO: depending on the role the user should display company profile or  */}
+            {/* TODO: depending on the role the user should display company profile or  */}
+            {/* <Route exact path="/myProfile">
               <SideBar>
                 <Profile />
               </SideBar>
+            </Route> */}
+            <Route exact path="/myProfile">
+              <NewNavigation >
+                <Profile />
+              </NewNavigation>
             </Route>
             <Route exact path="/mySavedJobs">
-              <SideBar>
+              {/* <SideBar>
                 <SavedJobs />
-              </SideBar>
+              </SideBar> */}
+              <NewNavigation >
+                <Profile />
+              </NewNavigation>
             </Route>
             <Route exact path="/login">
               <Login />
             </Route>
             <Route exact path="/createJob">
-              <SideBar>
+              {/* <SideBar>
                 <CreateJob />
-              </SideBar>
+              </SideBar> */}
+              <NewNavigation >
+                <CreateJob />
+              </NewNavigation>
+
             </Route>
             <Route exact path="/register">
               <Register />
@@ -48,15 +61,23 @@ export const App: React.FC = () => {
               <Login />
             </Route>
             <Route exact path="/editJobs">
-              <SideBar>
+              {/* <SideBar>
                 <EditJobs />
-              </SideBar>
+              </SideBar> */}
+              <NewNavigation >
+                <EditJobs />
+              </NewNavigation>
             </Route>
             <Route exact path="/about">{/* <About /> */}</Route>
             <AuthenticatedRoutes path="/" >
-              <SideBar>
+              {/* <SideBar>
                 <Home/>
-              </SideBar>
+              </SideBar> */}
+
+              <NewNavigation >
+                <Home/>
+              </NewNavigation>
+
             </AuthenticatedRoutes>
           </Switch>
         </BrowserRouter>
