@@ -39,7 +39,7 @@ const Home = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { show } = useSnackbar();
-
+  
   useEffect(() => {
     if(jobs){
       setDisplayedJobs(jobs);
@@ -205,7 +205,7 @@ const Home = ({
                         {selectedJob?.owner?.info?.numberOfEmployees} Employees
                       </span>
                     </div>
-                    { profile.role == 1 && (
+                    { profile?.role == 1 && (
                       <div className="mt-5 flex flex-row space-x-3">
                         <div>
                           <Button variant="outlined" className="rounded-lg">Apply</Button>

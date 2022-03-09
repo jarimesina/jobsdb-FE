@@ -6,7 +6,7 @@ import {Dispatch} from 'redux';
 import * as AuthActions from '../store/auth/duck/actions';
 import { RootState } from "MyTypes";
 import { selectUserId } from "../store/auth/duck/selectors";
-import { Link, useHistory } from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 
 interface Props {
   login: (email: string, password: string) => void;

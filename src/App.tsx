@@ -3,7 +3,6 @@ import { BrowserRouter, Switch, Route } from "react-router-dom";
 import { Register } from "./components/Register";
 import Home from "./components/Home";
 import Login  from "./components/Login";
-import SideBar from "./components/shared/SideBar";
 import { CreateJob } from "./components/CreateJob";
 import { Provider } from "react-redux";
 import store from "./store";
@@ -22,41 +21,46 @@ export const App: React.FC = () => {
           {/* A <Switch> looks through its children <Route>s and
                   renders the first one that matches the current URL. */}
           <Switch>
-            <Route exact path="/myProfile">
-              {/* TODO: depending on the role the user should display company profile or  */}
-              <SideBar>
-                <Profile />
-              </SideBar>
-            </Route>
-            <Route exact path="/mySavedJobs">
-              <SideBar>
+            {/* TODO: depending on the role the user should display company profile or  */}
+            <AuthenticatedRoutes path="/myProfile">
+              <Profile />
+            </AuthenticatedRoutes>
+            {/* <Route exact path="/mySavedJobs">
+              <NewNavigation >
                 <SavedJobs />
-              </SideBar>
-            </Route>
+              </NewNavigation>
+            </Route> */}
+
+            <AuthenticatedRoutes path="/mySavedJobs">
+              <SavedJobs />
+            </AuthenticatedRoutes>
+
             <Route exact path="/login">
               <Login />
             </Route>
-            <Route exact path="/createJob">
-              <SideBar>
+            <AuthenticatedRoutes exact path="/createJob">
+              {/* <SideBar>
                 <CreateJob />
-              </SideBar>
-            </Route>
+              </SideBar> */}
+              <CreateJob />
+            </AuthenticatedRoutes>
             <Route exact path="/register">
               <Register />
             </Route>
             <Route exact path="/login">
               <Login />
             </Route>
-            <Route exact path="/editJobs">
-              <SideBar>
+            <AuthenticatedRoutes exact path="/editJobs">
+              {/* <SideBar>
                 <EditJobs />
-              </SideBar>
-            </Route>
-            <Route exact path="/about">{/* <About /> */}</Route>
+              </SideBar> */}
+              <EditJobs />
+            </AuthenticatedRoutes>
             <AuthenticatedRoutes path="/" >
-              <SideBar>
+              {/* <SideBar>
                 <Home/>
-              </SideBar>
+              </SideBar> */}
+              <Home/>
             </AuthenticatedRoutes>
           </Switch>
         </BrowserRouter>

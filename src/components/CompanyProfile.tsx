@@ -57,7 +57,7 @@ const CompanyProfile = ({ profile }: Props) => {
                 <TextField name="company_name" id="company_name" variant="outlined" size="small"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.company_name}
+                  value={values?.company_name}
                 />
               </div>
 
@@ -69,7 +69,7 @@ const CompanyProfile = ({ profile }: Props) => {
                   id="about"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.about}
+                  value={values?.about}
                   className="border border-solid border-gray"
                 />
               </div>
@@ -82,7 +82,7 @@ const CompanyProfile = ({ profile }: Props) => {
                   id="benefits"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.benefits}
+                  value={values?.benefits}
                   className="border border-solid border-gray"
                 />
               </div>
@@ -92,7 +92,7 @@ const CompanyProfile = ({ profile }: Props) => {
                 <TextField name="industry" id="industry" variant="outlined" size="small"
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  value={values.industry}
+                  value={values?.industry}
                 />
               </div>
 
@@ -115,7 +115,7 @@ const CompanyProfile = ({ profile }: Props) => {
                   onBlur={handleBlur}
                   accept="image/*"
                 />
-                {values.image && (<img src={values.image} />)}
+                {values?.image && (<img src={values.image} />)}
               </div>
 
               <div className="mt-2">
@@ -124,12 +124,12 @@ const CompanyProfile = ({ profile }: Props) => {
                   <Select
                     name="numberOfEmployees"
                     id="numberOfEmployees"
-                    value={values.numberOfEmployees}
+                    value={values?.numberOfEmployees}
                     label="Number of Employees"
                     onChange={handleChange}
                   >
                     {EMPLOYEE_COUNT.map(number => (
-                      <MenuItem value={number.value} key={number.name}>{number.value}</MenuItem>
+                      <MenuItem value={number?.value} key={number.name}>{number.value}</MenuItem>
                     ))}
                   </Select>
                 </FormControl>
