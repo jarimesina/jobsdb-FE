@@ -13,10 +13,9 @@ export const REMOVE_SAVED_JOB = 'AUTH/REMOVE_SAVED_JOB';
 export const REMOVE_SAVED_JOB_SUCCESS = 'AUTH/REMOVE_SAVED_JOB_SUCCESS';
 
 export const login = (email: string, password: string) => action(LOGIN, {email, password});
-export const loginSuccess = (data: {
+export const loginSuccess = (
   token: string,
-  userId: string,
-}) => action(LOGIN_SUCCESS, {...data});
+  userId: string) => action(LOGIN_SUCCESS, {token, userId});
 
 export const logout = () => action(LOGOUT);
 export const fetchProfile = () => action(FETCH_PROFILE);

@@ -26,7 +26,8 @@ export default function reducer(state: State = initialState, action: AuthActions
     case AuthActions.LOGIN_SUCCESS: 
       return {
         ...state,
-        ...action.payload
+        token: action.payload.token,
+        userId: action.payload.userId
       };
     case AuthActions.FETCH_PROFILE: 
       return {

@@ -1,14 +1,15 @@
 import { Box, AppBar, CssBaseline, Toolbar, Typography, Drawer, Divider, List, ListItem, ListItemIcon, ListItemText, makeStyles } from "@mui/material";
-import * as React from "react";
+import React, {Dispatch, ReactNode, useEffect, useMemo} from "react";
 import IconButton from '@mui/material/IconButton';
 import Menu from '@material-ui/icons/Menu';
 import { connect } from "react-redux";
 import { RootState } from "MyTypes";
 import { selectProfile } from "../../store/auth/duck/selectors";
-import { ReactNode, useMemo } from "react";
 import { useHistory } from 'react-router-dom';
 import CustomIcon from "./CustomIcon";
 import * as Muicon from "@material-ui/icons";
+import { setToken } from '../../api/axios';
+import * as AuthActions from '../../store/auth/duck/actions';
 
 const drawerWidth = 240;
 
@@ -16,9 +17,12 @@ interface Props {
   window?: any;
   profile: any;
   children: ReactNode;
+  fetchProfile: () => void;
+  logout: () => void;
 }
 
-const NewNavigation = ({window, profile, children} : Props) => {
+// TODO: call fetchProfile here to get the state
+const NewNavigation = ({window, profile, children, fetchProfile, logout} : Props) => {
 
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -27,110 +31,113 @@ const NewNavigation = ({window, profile, children} : Props) => {
   };
   const history = useHistory();
 
-  // TODO: improve these arrays. they're hurting my eyes
-  const sideBarItems = useMemo(()=>{
-    if(profile?.role === 1){
-      return [
-        {
-          routeName: 'My Profile',
-          onClick: () => {
-            history.push('/myProfile');
-          },
-          icon: Muicon.Person,
-        },
-        {
-          routeName: 'My Saved Jobs',
-          onClick: () => {
-            history.push('/mySavedJobs');
-          },
-          icon: Muicon.Inbox,
-        },
-        {
-          routeName: 'Applied Jobs',
-          // icon: Muicon.Inbox,
-        },
-        {
-          routeName: 'Find Jobs',
-          onClick: () => {
-            history.push('/');
-          },
-          // icon: Muicon.Inbox,
-        },
-        {
-          routeName: 'Create Jobs',
-          onClick: () => {
-            history.push('/createJob');
-          },
-          // icon: Muicon.Inbox,
-        },
-        {
-          routeName: 'Edit My Jobs',
-          onClick: () => {
-            history.push('/editJobs');
-          },
-          // icon: Inbox,
-        },
-        {
-          routeName: 'Log Out',
-          onClick: () => {
-            // logout();
-            // cookies.remove('AUTH_KEY', {path: '/'});
-            // localStorage.removeItem('AUTH_KEY');
-            // setToken('');
-            history.push('/login');
-          }
-        }
-      ];
+  useEffect(() => {
+    const token = localStorage.getItem("AUTH_KEY");
+    setToken(token);
+    if(token && fetchProfile){
+      fetchProfile();
     }
-    return [
-      {
-        routeName: 'My Profile',
-        onClick: () => {
-          history.push('/myProfile');
-        },
-        icon: Muicon.Person,
+  }, [localStorage.getItem("AUTH_KEY"), fetchProfile]);
+
+  // TODO: fix issue with navigation always changing
+  // TODO: improve these arrays. they're hurting my eyes
+  const SIDEBAR_ITEMS = [
+    {
+      routeName: 'My Profile',
+      onClick: () => {
+        history.push('/myProfile');
       },
-      {
-        routeName: 'Find Jobs',
-        onClick: () => {
-          history.push('/');
-        },
-        icon: Muicon.Work,
+      route: '/myProfile',
+      icon: Muicon.Person,
+    },
+    {
+      routeName: 'My Saved Jobs',
+      onClick: () => {
+        history.push('/mySavedJobs');
       },
-      {
-        routeName: 'Create Jobs',
-        onClick: () => {
-          history.push('/createJob');
-        },
-        icon: Muicon.Create,
+      route: '/mySavedJobs',
+      icon: Muicon.Save,
+    },
+    {
+      routeName: 'Applied Jobs',
+      route: '#',
+      icon: Muicon.Email,
+    },
+    {
+      routeName: 'Find Jobs',
+      onClick: () => {
+        history.push('/');
       },
-      {
-        routeName: 'Edit My Jobs',
-        onClick: () => {
-          history.push('/editJobs');
-        },
-        icon: Muicon.Edit,
+      icon: Muicon.Work,
+      route: '/',
+    },
+    {
+      routeName: 'Log Out',
+      onClick: () => {
+        logout();
+        // cookies.remove('AUTH_KEY', {path: '/'});
+        localStorage.removeItem('AUTH_KEY');
+        setToken('');
+        history.push('/login');
       },
-      {
-        routeName: 'Log Out',
-        onClick: () => {
-          // logout();
-          // cookies.remove('AUTH_KEY', {path: '/'});
-          // localStorage.removeItem('AUTH_KEY');
-          // setToken('');
-          history.push('/login');
-        },
-        icon: Muicon.ExitToApp,
-      }
-    ];
-  }, [profile?.role]);
+      icon: Muicon.ExitToApp,
+    }
+  ];
+
+  const ADMIN_SIDEBAR_ITEMS = [
+    {
+      routeName: 'My Profile',
+      onClick: () => {
+        history.push('/myProfile');
+      },
+      route: '/myProfile',
+      icon: Muicon.Person,
+    },
+    {
+      routeName: 'Find Jobs',
+      onClick: () => {
+        history.push('/');
+      },
+      icon: Muicon.Work,
+      route: '/',
+    },
+    {
+      routeName: 'Create Jobs',
+      onClick: () => {
+        history.push('/createJob');
+      },
+      icon: Muicon.Create,
+      route: '/',
+    },
+    {
+      routeName: 'Edit My Jobs',
+      onClick: () => {
+        history.push('/editJobs');
+      },
+      icon: Muicon.Create,
+      route: '/editJobs',
+    },
+    {
+      routeName: 'Log Out',
+      onClick: () => {
+        logout();
+        // cookies.remove('AUTH_KEY', {path: '/'});
+        localStorage.removeItem('AUTH_KEY');
+        setToken('');
+        history.push('/login');
+      },
+      icon: Muicon.ExitToApp,
+    }
+  ];
+
+  const TEMP = profile?.role === 1 ? SIDEBAR_ITEMS : ADMIN_SIDEBAR_ITEMS;
 
   const drawer = (
     <div>
       <Toolbar />
       <Divider />
       <List>
-        {sideBarItems.map((item, index) => (
+        {TEMP.map((item, index) => (
           <ListItem button key={`${item.routeName}-${index}`} onClick={item.onClick}>
             <ListItemIcon>
               <CustomIcon variation={item.icon} />
@@ -165,7 +172,7 @@ const NewNavigation = ({window, profile, children} : Props) => {
             <Menu />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Responsive drawer
+            JOBSDB
           </Typography>
         </Toolbar>
       </AppBar>
@@ -216,4 +223,9 @@ const mapStateToProps = (state: RootState) => ({
   profile: selectProfile(state),
 });
 
-export default connect(mapStateToProps, null)(NewNavigation);
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+  logout: () => dispatch(AuthActions.logout()),
+  fetchProfile: () => dispatch(AuthActions.fetchProfile()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewNavigation);

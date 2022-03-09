@@ -7,8 +7,6 @@ interface Props {
 }
 
 const CustomIcon = ({variation, otherProps} : Props) => {
-  
-  console.log('variation', variation);
   const IconName = variation;
 
   if(!IconName){
