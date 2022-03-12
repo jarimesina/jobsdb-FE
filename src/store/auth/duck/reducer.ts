@@ -58,6 +58,7 @@ export default function reducer(state: State = initialState, action: AuthActions
           }
         }
       };
+    case AuthActions.SAVE_JOB:
     case AuthActions.REMOVE_SAVED_JOB:
       return {
         ...state,
@@ -69,6 +70,7 @@ export default function reducer(state: State = initialState, action: AuthActions
           }
         },
       };
+    case AuthActions.SAVE_JOB_SUCCESS:
     case AuthActions.REMOVE_SAVED_JOB_SUCCESS:
       return {
         ...state,

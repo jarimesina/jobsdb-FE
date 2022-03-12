@@ -50,7 +50,6 @@ export function* handleUpdateNormalUser(action: ActionType<typeof AuthService.up
     const { payload: {id, firstName, lastName, image} } = action;
     const response: AxiosResponse = yield call(AuthService.updateNormalUser, id, firstName, lastName, image);
     const { data } = response;
-    console.log('data', data);
     yield put(AuthActions.updateNormalUserSuccess(data.data));
   } catch (error) {
     const cookies = new Cookies();
@@ -76,4 +75,20 @@ export function* handleRemoveSavedJob(action: ActionType<typeof AuthService.remo
 
 export function* watchRemoveSavedJob() {
   yield takeLatest(AuthActions.REMOVE_SAVED_JOB, handleRemoveSavedJob );
+}
+
+export function* handleSaveJob(action: ActionType<typeof AuthService.saveJob>) {
+  try {
+    const { payload: {userId, jobId} } = action;
+    const response: AxiosResponse = yield call(AuthService.saveJob, jobId, userId);
+    const { data: { data } } = response;
+    yield put(AuthActions.saveJobSuccess(data));
+  } catch (error) {
+    const cookies = new Cookies();
+    cookies.remove('AUTH_KEY', { path: '/'});
+  }
+}
+
+export function* watchSaveJob() {
+  yield takeLatest(AuthActions.SAVE_JOB, handleSaveJob );
 }

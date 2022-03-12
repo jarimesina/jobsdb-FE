@@ -1,5 +1,5 @@
 import { RootState } from "MyTypes";
-import React, { Dispatch, useEffect, useState } from "react";
+import React, { Dispatch, useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import * as JobActions from '../store/jobs/duck/actions';
 import { selectJobsList, selectTotalJobs } from "../store/jobs/duck/selectors";
@@ -16,21 +16,23 @@ import TablePagination from '@mui/material/TablePagination';
 import { selectProfile } from "../store/auth/duck/selectors";
 import * as AuthService from "../api/AuthService";
 import { useSnackbar } from "../contexts/SnackbarContext";
+import * as AuthActions from '../store/auth/duck/actions';
 
 interface Props {
   jobs: JobDetails[];
   total: number;
   fetchJobs: (skip?: number, limit?: number, language?: string, dateRange?: string) => void;
   profile: any;
+  saveJob: (userId: string, jobId: string) => void;
 }
 
-// TODO: add feature to hide save button if user has already saved the job
 // TODO: add feature to prevent user from going back after logging out
 const Home = ({
   jobs,
   total,
   fetchJobs,
   profile,
+  saveJob,
 }: Props) => {
   const [language, setLanguage] = useState('');
   const [dateRange, setDateRange] = useState('');
@@ -39,7 +41,7 @@ const Home = ({
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const { show } = useSnackbar();
-  
+
   useEffect(() => {
     if(jobs){
       setDisplayedJobs(jobs);
@@ -103,6 +105,41 @@ const Home = ({
     const now = moment();
     return now.diff(date, "days");
   }
+
+  const isSaved = useMemo(() => {
+    if(profile?.info?.saved_jobs && selectedJob){
+      if(profile?.info?.saved_jobs.find((item: any) => item?._id === selectedJob?._id) !== undefined){
+        return true;
+      }
+      else{
+        return false;
+      }
+    }
+    return true;
+  }, [profile, profile?.info?.saved_jobs, selectedJob]);
+
+  // const handleSaveJob = async () => {
+  //   try{
+  //     const res = await AuthService.saveJob(selectedJob._id, profile._id);
+
+  //     if(res.status === 200){
+  //       show({message: 'Job added!', status: 'success'})
+  //     }
+  //   }
+  //   catch(err){
+  //     show({message: 'Failed to add job', status: 'error'})
+  //   }
+  // };
+
+  const handleSaveJob = async () => {
+    try{
+      saveJob(selectedJob._id, profile._id);
+      show({message: 'Job saved!', status: 'success'});
+    }
+    catch(err){
+      show({message: 'Failed to save job', status: 'error'})
+    }
+  };
 
   return (
     <>
@@ -210,19 +247,8 @@ const Home = ({
                         <div>
                           <Button variant="outlined" className="rounded-lg">Apply</Button>
                         </div>
-                        <div>
-                          <Button variant="contained" className="rounded-lg" onClick={async ()=>{
-                            try{
-                              const res = await AuthService.saveJob(selectedJob._id, profile._id);
-
-                              if(res.status === 200){
-                                show({message: 'Job added!', status: 'success'})
-                              }
-                            }
-                            catch(err){
-                              show({message: 'Failed to add job', status: 'error'})
-                            }
-                          }}>Save</Button>
+                        <div className={isSaved && ('hidden')}>
+                          <Button variant="contained" className="rounded-lg" onClick={() => handleSaveJob()}>Save</Button>
                         </div>
                       </div>
                     )}
@@ -276,6 +302,7 @@ const mapStateToProps = (state: RootState) => ({
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   fetchJobs: (skip?: number, limit?: number, language?: string, dateRange?: string) => dispatch(JobActions.fetchJobs(skip, limit, language, dateRange)),
+  saveJob: (jobId: string, userId: string) => dispatch(AuthActions.saveJob(jobId, userId)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
