@@ -18,6 +18,7 @@ export interface JobDetails {
   image: string,
   requirements: string,
   dateCreated?: string,
+  applicants: string,
 }
 
 export const PROGRAMMINGLANGUAGES = [
@@ -168,7 +169,7 @@ export const CreateJob: React.FC= () => {
                     {
                       values.languages.map((language: any, idx: number) => {
                         return (
-                          <Chip key={idx} label={language} size="small" onDelete={() => handleDelete(language, setFieldValue, values.languages)}/>
+                          <Chip key={`${language}-${idx}`} label={language} size="small" onDelete={() => handleDelete(language, setFieldValue, values.languages)}/>
                         )
                       })
                     }

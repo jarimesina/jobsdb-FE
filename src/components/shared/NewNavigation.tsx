@@ -161,7 +161,7 @@ const NewNavigation = ({window, profile, children, fetchProfile, logout} : Props
           ml: { sm: `${drawerWidth}px` },
         }}
       >
-        <Toolbar>
+        <Toolbar sx={{ background: '#8b5cf6' }}>
           <IconButton
             color="inherit"
             aria-label="open drawer"

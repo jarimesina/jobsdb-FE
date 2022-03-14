@@ -18,3 +18,18 @@ export function* handleFetchJobs(action: ActionType<typeof JobService.fetchJobs>
 export function* watchFetchJobs() {
   yield takeLatest(JobActions.FETCH_JOBS, handleFetchJobs);
 }
+
+export function* handleApplyJob(action: ActionType<typeof JobService.applyJob>) {
+  try {
+    const { payload: { toEmail, jobId, userId }} = action;
+    const response: AxiosResponse = yield call(JobService.applyJob, toEmail, jobId, userId);
+    const { data: { data } } = response;
+    yield put(JobActions.applyJobSuccess({data}));
+  } catch (e) {
+    //  yield put({type: "JOB_FETCH_FAILED", message: e.message});
+  }
+}
+
+export function* watchApplyJobs() {
+  yield takeLatest(JobActions.APPLY_JOB, handleApplyJob);
+}
