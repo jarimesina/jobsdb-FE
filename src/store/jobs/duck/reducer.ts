@@ -39,6 +39,21 @@ export default function reducer(state: State = initialState, action: JobActions)
         ...state,
         jobs: state.jobs.filter(job => job.languages.includes(action.payload.language))
       }
+    case JobActions.APPLY_JOB:
+      return {
+        ...state,
+      }
+    case JobActions.APPLY_JOB_SUCCESS:
+      // insert job in current jobs 
+      return {
+        ...state,
+        jobs: state.jobs.map((obj: any) => {
+          if(action.payload.data.data._id === obj._id){
+            return action.payload.data.data;
+          }
+          return obj;
+        })
+      }
     default: 
       return state;
   }

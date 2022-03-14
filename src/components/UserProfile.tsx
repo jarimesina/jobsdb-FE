@@ -47,7 +47,7 @@ export const UserProfile = ({ profile, updateNormalUser } : IFooInjectedProps) =
   // TODO: make forms look like the happyer ones
   // TODO: add translation feature
   return (
-    <div className="p-10 bg-white w-1/2 rounded-lg flex flex-col mt-10 mx-auto">
+    <div className="py-6 px-10 bg-white w-1/2 rounded-lg flex flex-col mt-10 mx-auto shadow-md">
       <div className="flex justify-between items-center mb-5">
         <div className="text-4xl">User Profile</div>
       </div>

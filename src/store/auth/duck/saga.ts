@@ -61,6 +61,7 @@ export function* watchUpdateNormalUser() {
   yield takeLatest(AuthActions.UPDATE_NORMAL_USER, handleUpdateNormalUser );
 }
 
+// TODO: move all these to job saga
 export function* handleRemoveSavedJob(action: ActionType<typeof AuthService.removeSavedJob>) {
   try {
     const { payload: {userId, jobId} } = action;

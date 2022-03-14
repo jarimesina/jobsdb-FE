@@ -14,9 +14,9 @@ import Briefcase from '../images/briefcase.svg';
 import Building from '../images/building.svg';
 import TablePagination from '@mui/material/TablePagination';
 import { selectProfile } from "../store/auth/duck/selectors";
-import * as AuthService from "../api/AuthService";
 import { useSnackbar } from "../contexts/SnackbarContext";
 import * as AuthActions from '../store/auth/duck/actions';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface Props {
   jobs: JobDetails[];
@@ -24,6 +24,7 @@ interface Props {
   fetchJobs: (skip?: number, limit?: number, language?: string, dateRange?: string) => void;
   profile: any;
   saveJob: (userId: string, jobId: string) => void;
+  applyJob: (toEmail: string, userId: string, jobId: string) => void;
 }
 
 // TODO: add feature to prevent user from going back after logging out
@@ -33,6 +34,7 @@ const Home = ({
   fetchJobs,
   profile,
   saveJob,
+  applyJob,
 }: Props) => {
   const [language, setLanguage] = useState('');
   const [dateRange, setDateRange] = useState('');
@@ -44,6 +46,7 @@ const Home = ({
 
   useEffect(() => {
     if(jobs){
+      console.log(typeof jobs);
       setDisplayedJobs(jobs);
       setSelectedJob(jobs[0]);
     }
@@ -141,6 +144,16 @@ const Home = ({
     }
   };
 
+  const handleApplyJob = async () => {
+    try{
+      applyJob(selectedJob?._id, profile?._id, selectedJob.owner?.email);
+      show({message: 'Applied to Job!', status: 'success'});
+    }
+    catch(err){
+      show({message: 'Failed to apply to job', status: 'error'})
+    }
+  }
+
   return (
     <>
       <div className="flex flex-row space-x-2 p-2 bg-white ">
@@ -189,17 +202,20 @@ const Home = ({
           <div className="w-5/12 flex flex-col">
             <div className="flex flex-col overflow-y-auto">
               {
-                displayedJobs.map((job: JobDetails,idx: any)=>{
+                displayedJobs.map((job: JobDetails, idx: any)=>{
                   return (
-                    <div key={idx} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
+                    <div key={`${job.companyName}-${idx}`} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
                       <div className="w-3/12 flex justify-center">
                         <img className="rounded-full h-14 w-14" src={job.image || "https://picsum.photos/200/300"}/>
                       </div>
                       <div className="flex flex-col w-9/12 border-b-2 border-gray-200 pb-2">
-                        <span className="text-blue-400 group-hover:underline">{job.title || 'n/a'}</span>
-                        <span>{job.companyName || 'n/a'}</span>
-                        <span>{job.location || 'n/a'}</span>
-                        <span>Posted {calculateTimeAgo(job.dateCreated)} days ago</span>
+                        <span className="text-blue-400 font-bold group-hover:underline">{job.title || 'n/a'}</span>
+                        <span style={{ color: 'gray'}}>{job.companyName || 'n/a'}</span>
+                        <span style={{ color: 'gray'}}>{job.location || 'n/a'}</span>
+                        <div>
+                          <span style={{ color: 'gray'}}>Posted {calculateTimeAgo(job.dateCreated)} days ago</span>
+                          <span className="text-green-700">{job?.applicants &&  ` | ${job?.applicants.length} applicants`}</span>
+                        </div>
                       </div>
                     </div>
                   );
@@ -218,11 +234,11 @@ const Home = ({
             </div>
           </div>
 
-          <div className="w-8/12 bg-white h-screen sticky overflow-y-auto">
+          <div className="w-7/12 bg-white h-screen sticky overflow-y-auto">
             {
               selectedJob && (
                 <div className="p-5">
-                  <div className="text-2xl">{selectedJob.title}</div>
+                  <div className="text-2xl font-bold">{selectedJob.title}</div>
                   <div className="text-md mt-2">{selectedJob?.owner?.info?.company_name + " | " + selectedJob?.location + " | " + "Posted on " + moment(selectedJob.dateCreated).format("DD-MM-YYYY")}</div>
 
                   <div className="mt-5 mb-2">
@@ -245,10 +261,10 @@ const Home = ({
                     { profile?.role == 1 && (
                       <div className="mt-5 flex flex-row space-x-3">
                         <div>
-                          <Button variant="outlined" className="rounded-lg">Apply</Button>
+                          <Button variant="contained" className="rounded-lg" onClick={() => handleApplyJob()}>Apply</Button>
                         </div>
-                        <div className={isSaved && ('hidden')}>
-                          <Button variant="contained" className="rounded-lg" onClick={() => handleSaveJob()}>Save</Button>
+                        <div>
+                          <Button variant="outlined" className="rounded-lg" onClick={() => handleSaveJob()}>{isSaved ? "Saved" : "Save"}</Button>
                         </div>
                       </div>
                     )}
@@ -260,28 +276,47 @@ const Home = ({
                     <div>{selectedJob?.owner?.info?.about}</div>
                   </div>
                   <div>
-                    <div>Industry:</div>
+                    <div className="flex items-center space-between space-x-3">
+                      <FontAwesomeIcon icon={['fas', 'industry']} />
+                      <h3>Industry:</h3>
+                    </div>
                     <div>{selectedJob?.owner?.info?.industry}</div>
                   </div>
-                  <div>
-                    <div>Benefits:</div>
+                  <div className="flex items-center space-between space-x-3">
+                    <FontAwesomeIcon icon={['fas', 'stethoscope']} />
+                    <h3>Benefits:</h3>
                     <pre>{selectedJob?.owner?.info?.benefits}</pre>
                   </div>
                   <div>
-                    <div>Responsibilities:</div>
+                    <div className="flex items-center space-between space-x-3">
+                      <FontAwesomeIcon icon={['fas', 'code']} />
+                      <h3>Responsibilities:</h3>
+                    </div>
                     <pre>
                       {selectedJob.responsibilities}
                     </pre>
                   </div>
                   <div>
-                    <div>Requirements:</div>
+                    <div className="flex items-center space-between space-x-3">
+                      <FontAwesomeIcon icon={['fas', 'list-check']} />
+                      <div>Requirements:</div>
+                    </div>
                     <pre>
                       {selectedJob.requirements}
                     </pre>
                   </div>
                   <div>
                     <div>
-                      Company Email: {selectedJob && selectedJob.owner?.email}
+                      <div className="flex items-center space-between space-x-3">
+                        <span>
+                          <FontAwesomeIcon icon={['fas', 'envelope']} />
+                        </span>
+                        <span>
+                          Company Email:
+                        </span> 
+                      </div>
+                      
+                      {selectedJob && selectedJob.owner?.email}
                     </div>
                   </div>
                 </div>
@@ -303,6 +338,7 @@ const mapStateToProps = (state: RootState) => ({
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
   fetchJobs: (skip?: number, limit?: number, language?: string, dateRange?: string) => dispatch(JobActions.fetchJobs(skip, limit, language, dateRange)),
   saveJob: (jobId: string, userId: string) => dispatch(AuthActions.saveJob(jobId, userId)),
+  applyJob: ( jobId: string, userId: string, toEmail: string) => dispatch(JobActions.applyJob(jobId, userId, toEmail))
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -19,3 +19,7 @@ export const deleteJob = (id: string) => {
 export const fetchCreatedJobs = (id: string) => {
   return axios.get(`http://localhost:4001/myJobs?id=${id}`);
 }
+
+export const applyJob = (toEmail: string, jobId: string, userId: string) => {
+  return axios.post(`http://localhost:4001/applyJob`, { toEmail, jobId, userId });
+}
