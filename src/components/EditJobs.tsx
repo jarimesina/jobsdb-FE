@@ -1,6 +1,6 @@
 import Button from '@mui/material/Button';
 import { RootState } from "MyTypes";
-import React, { Dispatch, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { selectProfile, selectUserId } from "../store/auth/duck/selectors";
 import { selectJobsList } from "../store/jobs/duck/selectors";
@@ -47,6 +47,7 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
   useEffect(()=>{
 
     if(profile){
+      console.log('profile', profile);
       getOwnedJobs();
     }
 
@@ -70,18 +71,15 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
     <div className="p-10">
       {
         ownedJobs && (
-          <BasicTable rowHeaders={["Company Name", "Position", "Title", "Location", "Number of Employees", "Actions"]} rowData={ownedJobs.data.data.map((ownedJob: JobDetails) => (
+          <BasicTable rowHeaders={["Title", "Location", "Created At", "Updated At", "Actions"]} rowData={ownedJobs.data.data.map((ownedJob: JobDetails) => (
             <TableRow
               key={ownedJob._id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              {/* <TableCell component="th" scope="row" align="right">
-                {ownedJob._id}
-              </TableCell> */}
-              <TableCell align="right">{ownedJob.companyName}</TableCell>
               <TableCell align="right">{ownedJob.title}</TableCell>
               <TableCell align="right">{ownedJob.location}</TableCell>
-              <TableCell align="right">{ownedJob.numberOfEmployees}</TableCell>
+              <TableCell align="right">{ownedJob?.createdAt}</TableCell>
+              <TableCell align="right">{ownedJob?.updatedAt}</TableCell>
               <TableCell align="right">
                 <div className="flex space-x-1 justify-end">
                   <Button onClick={() => {
@@ -144,9 +142,7 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
               _id: "",
               title: selectedJob?.title,
               responsibilities: selectedJob?.responsibilities,
-              companyName: selectedJob?.companyName,
               location: selectedJob?.location,
-              numberOfEmployees: selectedJob?.numberOfEmployees,
             }}
             onSubmit={handleSubmit}
           >

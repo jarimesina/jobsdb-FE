@@ -61,7 +61,10 @@ const NewNavigation = ({window, profile, children, fetchProfile, logout} : Props
     },
     {
       routeName: 'Applied Jobs',
-      route: '#',
+      onClick: () => {
+        history.push('/myAppliedJobs');
+      },
+      route: '/myAppliedJobs',
       icon: Muicon.Email,
     },
     {
