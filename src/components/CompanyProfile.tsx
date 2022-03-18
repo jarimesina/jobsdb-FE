@@ -57,10 +57,6 @@ const CompanyProfile = ({ profile, updateCompanyInfo }: Props) => {
     // });
   };
 
-  useEffect(() => {
-    console.log('profile', profile);
-  }, [profile]);
-
   return (
     <div className="p-10">
       <Formik

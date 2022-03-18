@@ -22,12 +22,8 @@ export const UserProfile = ({ profile, updateNormalUser } : IFooInjectedProps) =
   const onSubmit = async (values: any, {setSubmitting}: any) => {
     try{
       setSubmitting(false);
-      console.log("profile._id", profile);
-      // const res = await AuthService.updateNormalUser(profile._id, values.firstName, values.lastName, values.image);
       updateNormalUser(profile._id, values.firstName, values.lastName, values.image);
-      // if(res?.status === 200){
-      //   show({message: 'Profile Updated!', status: 'success'});
-      // }
+      show({message: 'Profile Updated!', status: 'success'});
 
     } catch(err){
       show({message: 'Profile failed to update', status: 'error'});
