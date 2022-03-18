@@ -1,7 +1,7 @@
 import { FormControl, FormLabel, InputLabel, MenuItem, Select, TextareaAutosize, TextField } from "@material-ui/core";
 import { Formik } from "formik";
 import { RootState } from "MyTypes";
-import React, { useEffect } from "react";
+import React from "react";
 import { Dispatch } from 'redux';
 import { connect } from "react-redux";
 import { selectProfile } from "../store/auth/duck/selectors";
