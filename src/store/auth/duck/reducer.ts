@@ -39,6 +39,7 @@ export default function reducer(state: State = initialState, action: AuthActions
         ...state,
         profile: action.payload.data
       };
+    case AuthActions.UPDATE_ADMIN:
     case AuthActions.UPDATE_NORMAL_USER:
       return {
         ...state,
@@ -47,6 +48,7 @@ export default function reducer(state: State = initialState, action: AuthActions
           info: {}
         },
       };
+    case AuthActions.UPDATE_ADMIN_SUCCESS:
     case AuthActions.UPDATE_NORMAL_USER_SUCCESS:
       return {
         ...state,

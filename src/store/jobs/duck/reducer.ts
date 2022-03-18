@@ -32,6 +32,7 @@ export default function reducer(state: State = initialState, action: JobActions)
     case JobActions.FILTER_JOBS_BY_DATE:
       return {
         ...state,
+        // TODO: remove this cuz you already have timestamps
         jobs: state.jobs.filter(job => (job.dateCreated >= action.payload.datePosted))
       }
     case JobActions.FILTER_JOBS_BY_LANGUAGE:

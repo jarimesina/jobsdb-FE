@@ -27,4 +27,5 @@ const mapStateToProps = (state: RootState) => ({
   profile: selectProfile(state),
 });
 
+// TODO: can remove this mapStateToProps
 export default connect(mapStateToProps, null)(Profile);

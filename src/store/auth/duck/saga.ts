@@ -61,6 +61,23 @@ export function* watchUpdateNormalUser() {
   yield takeLatest(AuthActions.UPDATE_NORMAL_USER, handleUpdateNormalUser );
 }
 
+// TODO: in saved jobs page. in order to display an item we need to access owner object cuz company name is not showing anymore so we need to display the company name by accessing owner object
+export function* handleUpdateAdmin(action: ActionType<typeof AuthService.updateCompanyInfo>) {
+  try {
+    const { payload: {id, companyName, about, benefits, image, industry, numberOfEmployees} } = action;
+    const response: AxiosResponse = yield call(AuthService.updateCompanyInfo, id, companyName, about, benefits, image, industry, numberOfEmployees);
+    const { data } = response;
+    yield put(AuthActions.updateNormalUserSuccess(data.data));
+  } catch (error) {
+    const cookies = new Cookies();
+    cookies.remove('AUTH_KEY', { path: '/'});
+  }
+}
+
+export function* watchUpdateAdmin() {
+  yield takeLatest(AuthActions.UPDATE_ADMIN, handleUpdateAdmin );
+}
+
 // TODO: move all these to job saga
 export function* handleRemoveSavedJob(action: ActionType<typeof AuthService.removeSavedJob>) {
   try {

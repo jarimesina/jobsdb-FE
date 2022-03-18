@@ -19,11 +19,6 @@ export const UserProfile = ({ profile, updateNormalUser } : IFooInjectedProps) =
   const { show } = useSnackbar();
   const [isEdit, setIsEdit] = useState(false);
 
-  console.log('profile', profile);
-  useEffect(() => {
-    console.log('profile', profile);
-  }, [profile]);
-
   const onSubmit = async (values: any, {setSubmitting}: any) => {
     try{
       setSubmitting(false);

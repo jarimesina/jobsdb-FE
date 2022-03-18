@@ -70,14 +70,14 @@ const EditJobs: React.FC<Props> = ({jobs, userId, profile}) => {
     <div className="p-10">
       {
         ownedJobs && (
-          <BasicTable rowHeaders={["ID", "Company Name", "Title", "Location", "Number of Employees", "Actions"]} rowData={ownedJobs.data.data.map((ownedJob: JobDetails) => (
+          <BasicTable rowHeaders={["Company Name", "Position", "Title", "Location", "Number of Employees", "Actions"]} rowData={ownedJobs.data.data.map((ownedJob: JobDetails) => (
             <TableRow
               key={ownedJob._id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
-              <TableCell component="th" scope="row" align="right">
+              {/* <TableCell component="th" scope="row" align="right">
                 {ownedJob._id}
-              </TableCell>
+              </TableCell> */}
               <TableCell align="right">{ownedJob.companyName}</TableCell>
               <TableCell align="right">{ownedJob.title}</TableCell>
               <TableCell align="right">{ownedJob.location}</TableCell>

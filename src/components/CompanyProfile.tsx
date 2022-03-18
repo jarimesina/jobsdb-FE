@@ -1,46 +1,65 @@
 import { FormControl, FormLabel, InputLabel, MenuItem, Select, TextareaAutosize, TextField } from "@material-ui/core";
 import { Formik } from "formik";
 import { RootState } from "MyTypes";
-import React from "react";
+import React, { useEffect } from "react";
+import { Dispatch } from 'redux';
 import { connect } from "react-redux";
 import { selectProfile } from "../store/auth/duck/selectors";
-import * as AuthService from '../api/AuthService';
+import * as AuthActions from '../store/auth/duck/actions';
 import { EMPLOYEE_COUNT } from "./CreateJob";
 import { useSnackbar } from "../contexts/SnackbarContext";
 
 interface Props {
   profile: any;
+  updateCompanyInfo: (id:string, companyName:string, about:string, benefits:string, image:string, industry:string, numberOfEmployees:string) => void;
 }
 
-const CompanyProfile = ({ profile }: Props) => {
+const CompanyProfile = ({ profile, updateCompanyInfo }: Props) => {
   const { show } = useSnackbar();
 
   const onSubmit = (values: any, {setSubmitting}: any) => {
-    AuthService.updateCompanyInfo(
+    setSubmitting(true);
+    updateCompanyInfo(
       profile._id,
       values.company_name,
       values.about,
       values.benefits,
       values.image,
       values.industry,
-      values.numberOfEmployees,
-    )
-    .then((response) => {
-      if(response.status === 200){
-        show({message: 'Profile updated!', status: 'success'})
-      }
-      else{
-        show({message: 'Failed to update profile', status: 'error'})
-      }
-    })
-    .catch((err: any) => {
-      show({message: 'Failed to update profile', status: 'error'})
-      console.log(err);
-    })
-    .finally(() => {
-      setSubmitting(false);
-    });
+      values.numberOfEmployees,      
+    );
+
+    show({message: 'Profile updated!', status: 'success'})
+
+    // AuthService.updateCompanyInfo(
+    //   profile._id,
+    //   values.company_name,
+    //   values.about,
+    //   values.benefits,
+    //   values.image,
+    //   values.industry,
+    //   values.numberOfEmployees,
+    // )
+    // .then((response) => {
+    //   if(response.status === 200){
+    //     show({message: 'Profile updated!', status: 'success'})
+    //   }
+    //   else{
+    //     show({message: 'Failed to update profile', status: 'error'})
+    //   }
+    // })
+    // .catch((err: any) => {
+    //   show({message: 'Failed to update profile', status: 'error'})
+    //   console.log(err);
+    // })
+    // .finally(() => {
+    //   setSubmitting(false);
+    // });
   };
+
+  useEffect(() => {
+    console.log('profile', profile);
+  }, [profile]);
 
   return (
     <div className="p-10">
@@ -148,4 +167,8 @@ const mapStateToProps = (state: RootState) => ({
   profile: selectProfile(state),
 });
 
-export default connect(mapStateToProps, null)(CompanyProfile);
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  updateCompanyInfo: (id:string, companyName:string, about:string, benefits:string, image:string, industry:string, numberOfEmployees:string) => dispatch(AuthActions.updateAdmin(id, companyName, about, benefits, image, industry, numberOfEmployees))
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(CompanyProfile);
