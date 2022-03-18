@@ -34,6 +34,7 @@ const NewNavigation = ({window, profile, children, fetchProfile, logout} : Props
   useEffect(() => {
     const token = localStorage.getItem("AUTH_KEY");
     setToken(token);
+    // TODO: fix issue when person tries to make a new company e.g. make a new company then user won't see his profile
     if(token && fetchProfile){
       fetchProfile();
     }

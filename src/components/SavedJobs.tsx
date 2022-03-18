@@ -21,15 +21,12 @@ const SavedJobs: React.FC<Props> = ({profile, removeSavedJob}) => {
   return (
     <div className="p-5">
       <BasicTable
-        rowHeaders={["ID", "Company Name", "Title", "Location", "Number of Employees", "Actions"]} 
+        rowHeaders={["Company Name", "Title", "Location", "Number of Employees", "Actions"]} 
         rowData={profile?.info?.saved_jobs.length ? profile?.info?.saved_jobs.map((job: any, index: number) => (
         <TableRow
           key={`${job._id}-${index}`}
           sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
         >
-          <TableCell component="th" scope="row" align="right">
-            {job._id}
-          </TableCell>
           <TableCell align="right">{job?.owner?.info?.company_name}</TableCell>
           <TableCell align="right">{job?.title}</TableCell>
           <TableCell align="right">{job.location}</TableCell>

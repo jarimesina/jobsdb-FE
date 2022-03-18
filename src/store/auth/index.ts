@@ -3,6 +3,7 @@ import {
   watchHandleLogin,
   watchRemoveSavedJob,
   watchSaveJob,
+  watchUpdateAdmin,
   watchUpdateNormalUser
 } from './duck/saga';
 import { all } from 'redux-saga/effects';
@@ -15,6 +16,7 @@ function* AuthSaga() {
     watchUpdateNormalUser(),
     watchRemoveSavedJob(),
     watchSaveJob(),
+    watchUpdateAdmin(),
   ]);
 }
 

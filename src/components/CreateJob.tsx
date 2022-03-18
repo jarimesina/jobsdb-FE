@@ -17,6 +17,7 @@ export interface JobDetails {
   languages: string[],
   image: string,
   requirements: string,
+  // TODO: remove this cuz you already have timestamps
   dateCreated?: string,
   applicants: string,
 }
@@ -81,6 +82,7 @@ export const CreateJob: React.FC= () => {
         location: values.location,
         languages: values.languages,
         image: values.image,
+        // TODO: remove this cuz you already have timestamps
         dateCreated: new Date()
       }
     )

@@ -46,7 +46,6 @@ const Home = ({
 
   useEffect(() => {
     if(jobs){
-      console.log(typeof jobs);
       setDisplayedJobs(jobs);
       setSelectedJob(jobs[0]);
     }
@@ -209,10 +208,11 @@ const Home = ({
                         <img className="rounded-full h-14 w-14" src={job.image || "https://picsum.photos/200/300"}/>
                       </div>
                       <div className="flex flex-col w-9/12 border-b-2 border-gray-200 pb-2">
-                        <span className="text-blue-400 font-bold group-hover:underline">{job.title || 'n/a'}</span>
+                        <span className="text-blue-400 text-lg font-bold group-hover:underline">{job.title || 'n/a'}</span>
                         <span style={{ color: 'gray'}}>{job.companyName || 'n/a'}</span>
                         <span style={{ color: 'gray'}}>{job.location || 'n/a'}</span>
                         <div>
+                          {/* TODO: remove this cuz you already have timestamps */}
                           <span style={{ color: 'gray'}}>Posted {calculateTimeAgo(job.dateCreated)} days ago</span>
                           <span className="text-green-700">{job?.applicants &&  ` | ${job?.applicants.length} applicants`}</span>
                         </div>
@@ -239,6 +239,7 @@ const Home = ({
               selectedJob && (
                 <div className="p-5">
                   <div className="text-2xl font-bold">{selectedJob.title}</div>
+                  {/* TODO: remove this cuz you already have timestamps */}
                   <div className="text-md mt-2">{selectedJob?.owner?.info?.company_name + " | " + selectedJob?.location + " | " + "Posted on " + moment(selectedJob.dateCreated).format("DD-MM-YYYY")}</div>
 
                   <div className="mt-5 mb-2">
