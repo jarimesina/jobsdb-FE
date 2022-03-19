@@ -203,7 +203,7 @@ const Home = ({
               {
                 displayedJobs.map((job: JobDetails, idx: any)=>{
                   return (
-                    <div key={`${job.owner.info.companyName}-${idx}`} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
+                    <div key={`${job?.owner?.info?.companyName}-${idx}`} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
                       <div className="w-3/12 flex justify-center">
                         <img className="rounded-full h-14 w-14" src={job?.owner?.info?.image || "https://picsum.photos/200/300"}/>
                       </div>
