@@ -203,17 +203,16 @@ const Home = ({
               {
                 displayedJobs.map((job: JobDetails, idx: any)=>{
                   return (
-                    <div key={`${job.companyName}-${idx}`} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
+                    <div key={`${job?.owner?.info?.companyName}-${idx}`} className={`${job?._id === selectedJob._id && "bg-blue-200"} group flex flex-row bg-white py-3 px-2 cursor-pointer`} onClick={() => handleJobClick(job)}>
                       <div className="w-3/12 flex justify-center">
-                        <img className="rounded-full h-14 w-14" src={job.image || "https://picsum.photos/200/300"}/>
+                        <img className="rounded-full h-14 w-14" src={job?.owner?.info?.image || "https://picsum.photos/200/300"}/>
                       </div>
                       <div className="flex flex-col w-9/12 border-b-2 border-gray-200 pb-2">
                         <span className="text-blue-400 text-lg font-bold group-hover:underline">{job.title || 'n/a'}</span>
-                        <span style={{ color: 'gray'}}>{job.companyName || 'n/a'}</span>
+                        <span style={{ color: 'gray'}}>{job?.owner?.info?.company_name || 'n/a'}</span>
                         <span style={{ color: 'gray'}}>{job.location || 'n/a'}</span>
                         <div>
-                          {/* TODO: remove this cuz you already have timestamps */}
-                          <span style={{ color: 'gray'}}>Posted {calculateTimeAgo(job.dateCreated)} days ago</span>
+                          <span style={{ color: 'gray'}}>Posted {calculateTimeAgo(job.createdAt)} days ago</span>
                           <span className="text-green-700">{job?.applicants &&  ` | ${job?.applicants.length} applicants`}</span>
                         </div>
                       </div>
@@ -240,7 +239,7 @@ const Home = ({
                 <div className="p-5">
                   <div className="text-2xl font-bold">{selectedJob.title}</div>
                   {/* TODO: remove this cuz you already have timestamps */}
-                  <div className="text-md mt-2">{selectedJob?.owner?.info?.company_name + " | " + selectedJob?.location + " | " + "Posted on " + moment(selectedJob.dateCreated).format("DD-MM-YYYY")}</div>
+                  <div className="text-md mt-2">{selectedJob?.owner?.info?.company_name + " | " + selectedJob?.location + " | " + "Posted on " + moment(selectedJob.createdAt).format("DD-MM-YYYY")}</div>
 
                   <div className="mt-5 mb-2">
                     <div className="mt-2 flex space-x-2">

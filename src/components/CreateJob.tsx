@@ -17,8 +17,9 @@ export interface JobDetails {
   languages: string[],
   image: string,
   requirements: string,
-  // TODO: remove this cuz you already have timestamps
-  dateCreated?: string,
+  owner: any;
+  createdAt?: string,
+  updatedAt?: string,
   applicants: string,
 }
 
@@ -82,8 +83,6 @@ export const CreateJob: React.FC= () => {
         location: values.location,
         languages: values.languages,
         image: values.image,
-        // TODO: remove this cuz you already have timestamps
-        dateCreated: new Date()
       }
     )
     .then((response) => {
@@ -127,8 +126,8 @@ export const CreateJob: React.FC= () => {
       >
         {({handleSubmit, handleChange, handleBlur, setFieldValue, values}) => {
           return (
-            <form onSubmit={handleSubmit}>
-              <div className="mx-auto bg-white p-10 rounded-lg w-1/2 mt-10">
+            <form className="py-6 px-10 bg-white w-1/2 rounded-lg flex flex-col mt-10 mx-auto shadow-md" onSubmit={handleSubmit}>
+              <div className="mx-auto bg-white rounded-lg">
                 <span className="text-lg font-bold">Create a new job</span>
                 <div className="flex justify-center flex-col">
                   <div className="flex flex-row justify-between space-x-2">

@@ -12,6 +12,7 @@ import './App.css';
 import Profile from "./components/Profile";
 import { SnackbarProvider } from "./contexts/SnackbarContext";
 import SavedJobs from "./components/SavedJobs";
+import AppliedJobs from "./components/AppliedJobs";
 
 export const App: React.FC = () => {
   return (
@@ -24,6 +25,10 @@ export const App: React.FC = () => {
             {/* TODO: depending on the role the user should display company profile or  */}
             <AuthenticatedRoutes path="/myProfile">
               <Profile />
+            </AuthenticatedRoutes>
+
+            <AuthenticatedRoutes path="/myAppliedJobs">
+              <AppliedJobs />
             </AuthenticatedRoutes>
             {/* <Route exact path="/mySavedJobs">
               <NewNavigation >

@@ -14,6 +14,8 @@ interface Props{
   profile: any;
 }
 
+// TODO: delete this if you're not using it
+
 const SideBar: React.FC<Props>  = ({children, logout, fetchProfile, profile}) => {
 
   const cookies = new Cookies();

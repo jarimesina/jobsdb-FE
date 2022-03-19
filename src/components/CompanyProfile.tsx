@@ -58,7 +58,7 @@ const CompanyProfile = ({ profile, updateCompanyInfo }: Props) => {
   };
 
   return (
-    <div className="p-10">
+    <div className="py-6 px-10 bg-white w-1/2 rounded-lg flex flex-col mt-10 mx-auto shadow-md">
       <Formik
         onSubmit={onSubmit}
         initialValues={profile?.info}
@@ -130,7 +130,7 @@ const CompanyProfile = ({ profile, updateCompanyInfo }: Props) => {
                   onBlur={handleBlur}
                   accept="image/*"
                 />
-                {values?.image && (<img src={values.image} />)}
+                {values?.image && (<img className="w-20 h-auto" src={values.image} />)}
               </div>
 
               <div className="mt-2">
