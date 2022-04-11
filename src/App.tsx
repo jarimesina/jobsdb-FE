@@ -19,10 +19,7 @@ export const App: React.FC = () => {
     <SnackbarProvider>
       <Provider store={store}>
         <BrowserRouter>
-          {/* A <Switch> looks through its children <Route>s and
-                  renders the first one that matches the current URL. */}
           <Switch>
-            {/* TODO: depending on the role the user should display company profile or  */}
             <AuthenticatedRoutes path="/myProfile">
               <Profile />
             </AuthenticatedRoutes>
@@ -30,11 +27,6 @@ export const App: React.FC = () => {
             <AuthenticatedRoutes path="/myAppliedJobs">
               <AppliedJobs />
             </AuthenticatedRoutes>
-            {/* <Route exact path="/mySavedJobs">
-              <NewNavigation >
-                <SavedJobs />
-              </NewNavigation>
-            </Route> */}
 
             <AuthenticatedRoutes path="/mySavedJobs">
               <SavedJobs />
@@ -43,28 +35,20 @@ export const App: React.FC = () => {
             <Route exact path="/login">
               <Login />
             </Route>
+
             <AuthenticatedRoutes exact path="/createJob">
-              {/* <SideBar>
-                <CreateJob />
-              </SideBar> */}
               <CreateJob />
             </AuthenticatedRoutes>
+
             <Route exact path="/register">
               <Register />
             </Route>
-            <Route exact path="/login">
-              <Login />
-            </Route>
+
             <AuthenticatedRoutes exact path="/editJobs">
-              {/* <SideBar>
-                <EditJobs />
-              </SideBar> */}
               <EditJobs />
             </AuthenticatedRoutes>
+
             <AuthenticatedRoutes path="/" >
-              {/* <SideBar>
-                <Home/>
-              </SideBar> */}
               <Home/>
             </AuthenticatedRoutes>
           </Switch>
